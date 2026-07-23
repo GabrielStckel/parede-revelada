@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "./Logo";
+import { lock, unlock } from "@/lib/scroll-lock";
 
 const LINKS = [
   { href: "#servicos", label: "Serviços", id: "servicos" },
@@ -53,8 +54,7 @@ export function Nav() {
   // Mobile menu: body lock + focus trap + esc
   useEffect(() => {
     if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    lock();
 
     const container = menuRef.current;
     const focusables = container
@@ -84,7 +84,7 @@ export function Nav() {
     };
     document.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = prev;
+      unlock();
       document.removeEventListener("keydown", onKey);
       burgerRef.current?.focus();
     };

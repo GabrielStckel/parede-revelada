@@ -1,148 +1,237 @@
-## Etapa 3 (final) — Serviços: lista-acordeão editorial
+## Etapa 4 — Obras: grid assimétrico + filtros + lightbox (revisado)
 
-Fundo `--concreto`, âncora `#servicos`. Sem grid de cards, sem sombras, sem opacidade em texto (`--grafite` sobre `--concreto` = 5,34:1, AA).
+Fundo `--breu`, âncora `#obras`. Reusa `.section-reveal` (etapa 3). Framer Motion para layout animation.
 
-### Copy
+### Dependência
 
-- Eyebrow (JetBrains Mono 12px, tracking 0.16em, `--grafite`): `SISTEMAS APLICADOS`
-- H2 (Anton, `--text-h2`, `--cal`): `O ACABAMENTO COMEÇA ANTES DA TINTA`
+`bun add framer-motion`.
 
-### Dados: `src/data/servicos.ts`
+### Novo utilitário compartilhado — `src/lib/scroll-lock.ts`
+
+Contador de referências para o menu mobile da Nav **e** o lightbox conviverem sem sobrescrever o estilo do `body`.
 
 ```ts
-export type Servico = {
+let count = 0;
+let prevOverflow: string | null = null;
+let prevPaddingRight: string | null = null;
+
+export function lock() {
+  if (typeof document === "undefined") return;
+  count += 1;
+  if (count > 1) return;
+  const html = document.documentElement;
+  const body = document.body;
+  const sbw = window.innerWidth - html.clientWidth; // largura da scrollbar
+  prevOverflow = body.style.overflow;
+  prevPaddingRight = body.style.paddingRight;
+  body.style.overflow = "hidden";
+  if (sbw > 0) body.style.paddingRight = `${sbw}px`;
+}
+
+export function unlock() {
+  if (typeof document === "undefined") return;
+  count = Math.max(0, count - 1);
+  if (count > 0) return;
+  const body = document.body;
+  body.style.overflow = prevOverflow ?? "";
+  body.style.paddingRight = prevPaddingRight ?? "";
+  prevOverflow = null;
+  prevPaddingRight = null;
+}
+```
+
+Adiciona `html { scrollbar-gutter: stable; }` em `src/styles.css` como cinto-e-suspensório (evita salto horizontal mesmo com o padding-compensation).
+
+Refatora `src/components/site/Nav.tsx` (etapa 1): o `useEffect` do menu mobile passa a chamar `lock()`/`unlock()` em vez de mexer diretamente em `document.body.style.overflow`.
+
+### Dados: `src/data/obras.ts`
+
+```ts
+// Todos os dados são placeholders. Substituir por obras reais antes de publicar.
+// Regra de layout: itens com span "full" só encaixam no início de uma linha
+// do grid de 2 colunas. Como o grid usa grid-auto-flow: dense, buracos
+// são preenchidos automaticamente por half seguintes, mas manter fulls
+// intercalados com pares half evita saltos visuais grandes.
+
+export type CategoriaObra = "fachadas" | "texturas" | "cimento-queimado" | "interiores";
+
+export type Obra = {
   id: string;
-  nome: string;
-  aplicacao: string;
-  paragrafos: [string, string];
-  sistemas: string[];
-  thumb: string; // URL fixa images.unsplash.com/photo-{id}?w=400&h=280&fit=crop
+  titulo: string;                  // "OBRA EXEMPLO 01" etc.
+  categoria: CategoriaObra;
+  local: string;                   // "— a confirmar"
+  sistema: string;                 // descrição técnica genérica marcada
+  area: string;                    // "— a confirmar"
+  prazo: string;                   // "— a confirmar"
+  imagem: string;                  // Unsplash w=1600
+  thumb: string;                   // Unsplash w=800
+  alt: string;                     // descrição factual da imagem
+  span: "full" | "half";
 };
 ```
 
-Miniaturas: URLs **diretas e fixas** de `https://images.unsplash.com/photo-{id}?w=400&h=280&fit=crop&auto=format` — uma por slug, escolhidas manualmente, mesma imagem a cada build. Cada item recebe `// TODO: substituir por foto real da obra`.
-
-Parágrafos com voz técnica: preparo (lixamento, remoção de partes soltas, tratamento de mofo com solução fungicida, massa PVA/acrílica, selador), sistema (produto + camadas + intervalo entre demãos), número de demãos e durabilidade em anos, onde faz sentido. Proibido: "soluções", "personalizadas", "alto padrão", "qualidade", "excelência".
-
-### Revelação de seção — sem clip-path residual
-
-Utilitário em `src/styles.css`:
-```css
-.section-reveal { clip-path: inset(0 0 100% 0); }
-.section-reveal[data-revealing="true"] {
-  clip-path: inset(0 0 0 0);
-  transition: clip-path 700ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-.section-reveal[data-revealed="true"] { clip-path: none; }
-@media (prefers-reduced-motion: reduce) {
-  .section-reveal { clip-path: none; }
-}
-```
-
-Fluxo no componente:
-1. `IntersectionObserver` (threshold 0.2), uma vez → `observer.disconnect()`; set `data-revealing="true"`.
-2. `transitionend` (propriedade `clip-path`) → remove `data-revealing`, set `data-revealed="true"` (aplica `clip-path: none`, elimina o containing block).
-3. `prefers-reduced-motion`: marca `data-revealed="true"` direto no mount, sem observer.
-
-**Convenção do projeto** (documentar em `.lovable/plan.md` para etapas 4+): modal, lightbox e qualquer overlay **em portal no `document.body`**, nunca dentro de uma seção com `.section-reveal`.
-
-### Componente `src/components/site/Servicos.tsx`
+8 itens `OBRA EXEMPLO 01..08`, duas por categoria, cada um com `// TODO: dados reais`. Ordem/spans:
 
 ```
-<section id="servicos" class="section-y" style="background: var(--color-concreto); position: relative">
-  <div class="container-stckel section-reveal" ref={sectionRef}>
-    <header>eyebrow + h2</header>
-    <ul role="list" onPointerMove={onMove} onPointerLeave={hide}>
-      {servicos.map(s => <ServicoLinha ... />)}
-    </ul>
+01 FULL fachadas          05 HALF interiores
+02 HALF interiores        06 HALF texturas
+03 HALF cimento-queimado  07 HALF cimento-queimado
+04 FULL fachadas          08 HALF texturas
+```
+
+Sistema fica descritivo mas marcado: `"Textura projetada — sistema a confirmar"`, etc. Local/área/prazo: `"— a confirmar"`. `alt` descreve a foto Unsplash factualmente (não a obra fictícia).
+
+Imagens: URLs Unsplash fixas `https://images.unsplash.com/photo-{id}?w=1600&h=1200&fit=crop&auto=format` e `?w=800&h=600&...`.
+
+### Componente `src/components/site/Obras.tsx`
+
+```
+<section id="obras" class="section-y" style="background: var(--color-breu)">
+  <div class="container-stckel section-reveal">
+    <header>
+      <p class="eyebrow">OBRAS ENTREGUES</p>
+      <h2>O RESULTADO NA PAREDE</h2>
+    </header>
+    <Filtros value={cat} onChange={setCat} counts={counts} />
+    <motion.ul class="obras-grid" layout>
+      <AnimatePresence mode="popLayout">
+        {filtered.map(o => <ObraCard key={o.id} obra={o} onOpen={openLightbox} />)}
+      </AnimatePresence>
+    </motion.ul>
   </div>
-  <ThumbFollower ref={thumbRef} items={servicos} activeId={hoverId} />
 </section>
 ```
 
-### Cada linha — semântica com heading
+**Filtros** — `<div role="group" aria-label="Filtrar obras">`, botões `<button aria-pressed>`:
+- Mono 12px, tracking 0.12em, uppercase. Rótulos: `TODAS (8) / FACHADAS (2) / TEXTURAS (2) / CIMENTO QUEIMADO (2) / INTERIORES (2)`.
+- Ativo: cor `--laranja`, borda inferior 1px `--laranja`. Inativos `--grafite`, hover `--cal`.
+- Sem fundo/pílula. `min-height: 44px`. Mobile: `overflow-x: auto`.
 
-```
-<li data-servico-id={id} class="linha">
-  <h3 class="linha-head">
-    <button aria-expanded={open} aria-controls={"painel-"+id} id={"trigger-"+id} class="linha-inner">
-      <span class="nome">{nome}</span>
-      <span class="aplicacao">{aplicacao}</span>
-    </button>
-  </h3>
-  <div id={"painel-"+id} role="region" aria-labelledby={"trigger-"+id}
-       class="painel" data-open={open} {...(!open && { inert: "" })}>
-    <div class="painel-inner">
-      <p>{p1}</p><p>{p2}</p>
-      <p class="sistemas">SISTEMAS: {sistemas.join(" · ")}</p>
-    </div>
-  </div>
-</li>
-```
-
-- `.linha-head`: `margin: 0; font: inherit; font-weight: inherit;` — só estrutura, sem estilo próprio. Hierarquia final: h2 (seção) → h3 (cada serviço).
-- `<li>`: `border-top: 1px solid var(--color-hairline)`; último recebe `border-bottom`. Nunca transformado.
-- `.linha-inner`: `<button>` largura total, grid `1fr auto` em ≥768px, padding-block 28px, text-align left, background transparente.
-- `.nome`: Anton, `clamp(1.5rem, 6vw, 2rem)`, line-height 0.95, `--cal`, uppercase, letter-spacing -0.01em.
-- `.aplicacao`: JetBrains Mono 12px, tracking 0.12em, `--grafite`, uppercase.
-- **Mobile <768px**: `.linha-inner` vira flex column gap 6px — aplicação abaixo do nome.
-- **Hover desktop** (`@media (hover: hover) and (pointer: fine)`):
-  - `transform: translateX(8px)` só em `.linha-inner`, transição 220ms `cubic-bezier(0.22,1,0.36,1)`.
-  - `.linha-inner:hover .nome`, `.linha[data-open="true"] .nome` → `color: var(--color-laranja)`.
-  - Bordas do `<li>` ficam paradas.
-- Sem `box-shadow` em nada.
-
-### Painel — animação sem salto de fechamento
-
+**Grid `.obras-grid`**:
 ```css
-.painel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 320ms cubic-bezier(0.22,1,0.36,1); }
-.painel[data-open="true"] { grid-template-rows: 1fr; }
-.painel-inner {
-  overflow: hidden;
-  visibility: hidden;
-  transition: visibility 0s linear 320ms;   /* fecha: só some após o colapso */
+.obras-grid {
+  display: grid;
+  gap: clamp(16px, 2vw, 24px);
+  grid-template-columns: 1fr;
 }
-.painel[data-open="true"] .painel-inner {
-  visibility: visible;
-  transition: visibility 0s linear 0s;      /* abre: aparece imediatamente */
-}
-@media (prefers-reduced-motion: reduce) {
-  .painel, .painel-inner { transition: none; }
+@media (min-width: 1024px) {
+  .obras-grid { grid-template-columns: repeat(2, 1fr); grid-auto-flow: dense; }
+  .obras-grid > [data-span="full"] { grid-column: span 2; }
 }
 ```
 
-Acessibilidade fora do fluxo quando fechado: atributo `inert` (spread condicional) + `visibility: hidden` como redundância para UAs sem suporte a `inert`.
+`grid-auto-flow: dense` cobre lacunas quando um filtro reduz a lista (item 4 da correção).
 
-Estado: `openId: string | null` (só um aberto). Setas ↑/↓ movem foco entre triggers (`onKeyDown` no `<ul>`); Home/End primeiro/último; `preventDefault` só nessas teclas.
+**Card (HTML válido — item 1 da correção)**:
+```
+<motion.li layout data-span={obra.span} class="obra-item">
+  <button
+    class="obra-cta"
+    aria-label={`Ver obra ${obra.titulo} em detalhe`}
+    onClick={e => onOpen(obra, e.currentTarget)}
+  >
+    <span class="obra-media">
+      <img src={obra.thumb} alt={obra.alt} width={800} height={obra.span === "full" ? 450 : 600}
+           loading="lazy" decoding="async" />
+    </span>
+  </button>
+  <FichaTecnica obra={obra} />
+</motion.li>
+```
 
-Parágrafos: Barlow 400, ~1rem, `--grafite` (sem opacidade). Sistemas em JetBrains Mono 12px, `--grafite`.
+- `<button>` só envolve a mídia; `<dl>` da ficha fica **fora** do botão, irmã dentro do `<li>`.
+- `aria-label` explícito impede que `alt` da imagem vire nome acessível.
+- `.obra-cta { display: block; width: 100%; padding: 0; border: 0; background: transparent; cursor: pointer; }` (mantém aria-pressed offhand).
+- `.obra-media { display: block; aspect-ratio: 16/9; overflow: hidden; border: 1px solid var(--color-hairline); }` — half sobrescreve para `4/3`. `img { width: 100%; height: 100%; object-fit: cover; transition: transform 500ms cubic-bezier(0.22,1,0.36,1); }`.
+- Hover desktop: `.obra-cta:hover .obra-media img { transform: scale(1.03); }`.
 
-### ThumbFollower — sem mismatch, ref+rAF, só mouse
+**FichaTecnica** (`src/components/site/FichaTecnica.tsx`, reutilizada no card e no lightbox):
+- `<dl>` com 4 pares LOCAL/SISTEMA/ÁREA/ENTREGA.
+- `<dt>` mono 11px, tracking 0.14em, `--grafite`, uppercase.
+- `<dd>` mono 12px, `--cal`, margin 0.
+- Padding-block ~14px, `border-top: 1px solid var(--color-hairline)` sob a imagem.
+- Prop `variant?: "card" | "lightbox"` só troca tamanhos/gap.
 
-`src/components/site/ThumbFollower.tsx`, montado **sempre** (nunca condicional por `useIsMobile()`, que causaria mismatch de hidratação):
+**Layout animation**:
+- `layout` no `<motion.ul>` e nos `<motion.li>`. `AnimatePresence mode="popLayout"`. Transição `{ duration: 0.35, ease: [0.22,1,0.36,1] }`, initial/exit `{ opacity: 0 }`.
+- `useReducedMotion()` desliga `layout` (lista estática).
 
-- Estado interno: `const [mounted, setMounted] = useState(false); useEffect(() => setMounted(true), []);` — só ativa após montagem no cliente.
-- CSS esconde definitivamente em toques/caneta: renderiza dentro de wrapper com `@media not all and (hover: hover) and (pointer: fine) { display: none; }`.
-- Props: `items`, `activeId: string | null`. Único estado React na página de serviços: `hoverId`.
-- Posição em `useRef`:
+### Lightbox — `src/components/site/ObraLightbox.tsx`, portal no `body`
+
+```
+<div role="dialog" aria-modal="true" aria-labelledby="lightbox-title" ref={rootRef} class="lightbox-root">
+  <div class="lightbox-backdrop" onClick={close} />
+  <div class="lightbox-panel">
+    <button class="lightbox-close" aria-label="Fechar">×</button>
+    <button class="lightbox-nav prev" aria-label="Obra anterior">‹</button>
+    <button class="lightbox-nav next" aria-label="Próxima obra">›</button>
+    <figure class="lightbox-media">
+      <img src={obra.imagem} alt={obra.alt} loading="eager" fetchpriority="high" decoding="async" />
+    </figure>
+    <aside class="lightbox-info">
+      <p class="eyebrow">{categoriaLabel}</p>
+      <h3 id="lightbox-title" tabIndex={-1}>{obra.titulo}</h3>
+      <FichaTecnica obra={obra} variant="lightbox" />
+    </aside>
+  </div>
+</div>
+```
+
+- Confirmado: imagem grande usa `loading="eager"` e `fetchpriority="high"` (item extra da correção).
+- Portal em `document.body` (convenção fixada na etapa 3).
+
+**Scroll lock**: `useEffect` chama `lock()` no mount e `unlock()` no unmount — mesmo utilitário do menu mobile.
+
+**Foco inicial**: no mount, foca `.lightbox-close`. Guarda o card originador em ref (`returnFocusRef` recebido de `Obras.tsx`) e restaura no unmount.
+
+**Focus trap (item 5 da correção)** — sem `data-lightbox-focusable`. No `onKeyDown` do root, ao pressionar Tab consulta:
+
+```ts
+const nodes = rootRef.current!.querySelectorAll<HTMLElement>(
+  'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+);
+const focusables = Array.from(nodes).filter(el => {
+  if (el.hasAttribute("disabled")) return false;
+  const style = getComputedStyle(el);
+  if (style.visibility === "hidden" || style.display === "none") return false;
+  return el.offsetParent !== null || style.position === "fixed";
+});
+```
+
+Aplica Tab/Shift+Tab circular sobre `focusables`. `#lightbox-title` (tabindex="-1") fica fora da lista porque o seletor exclui `tabindex="-1"`.
+
+**Teclado**:
+- `Esc` → fecha.
+- `←` / `→` → `prev()` / `next()`, navegando sobre a **lista filtrada** vigente (com wrap-around).
+- Tab/Shift+Tab → trap.
+
+**Anúncio da troca (item 6 da correção)**:
+- Sempre que `obra.id` mudar dentro do lightbox aberto, um `useEffect([obra.id])` chama `titleRef.current?.focus()` — o `<h3 id="lightbox-title" tabindex="-1">` recebe foco e o leitor de tela anuncia o novo título. Sem `aria-live` adicional (o foco já é o anúncio).
+- No mesmo effect, pré-carrega vizinhos:
   ```ts
-  const target = useRef({ x: 0, y: 0 });
-  const current = useRef({ x: 0, y: 0 });
-  const raf = useRef<number | null>(null);
+  const preload = (src: string) => { const i = new Image(); i.src = src; };
+  preload(list[(idx + 1) % list.length].imagem);
+  preload(list[(idx - 1 + list.length) % list.length].imagem);
   ```
-- API imperativa via `useImperativeHandle`: `setTarget(x, y)`, `hide()`. Loop rAF: `current += (target - current) * 0.18`, escreve `node.style.transform = translate3d(x+20, y+20, 0)` direto no DOM. Cancela quando escondido.
-- Listener em `Servicos.tsx`: `onPointerMove` no `<ul>`.
-  - `if (!mounted || isMobile) return;` (guarda de listener; `useIsMobile` continua útil aqui, só não controla montagem).
-  - `if (e.pointerType !== "mouse") return;` — ignora caneta e toque.
-  - `const li = (e.target as HTMLElement).closest("[data-servico-id]"); if (!li) return;`
-  - Chama `thumb.setTarget(e.clientX, e.clientY)`; atualiza `hoverId` só quando muda.
-  - `onPointerLeave` do `<ul>` → `thumb.hide()` e `setHoverId(null)`.
-- Elemento: `<img width={200} height={140} loading="lazy" decoding="async">` com `border: 1px solid var(--color-hairline)`. **Sem sombra**. `position: fixed; top: 0; left: 0; pointer-events: none; will-change: transform;` — fade opacity 160ms ao aparecer/sumir. Escondido se `activeId === openId`.
+
+**Layout visual do lightbox**:
+- Desktop ≥1024px: `grid-template-columns: 1fr 360px`, altura 92vh, fundo `color-mix(var(--color-breu) 96%, transparent)`, painel lateral `--concreto`.
+- Mobile: coluna única, imagem no topo (proporção original), painel rolável abaixo (`overflow-y: auto`).
+- Botões 44×44, `--cal`, sem sombra, hairline. Nav lateral em `top: 50%` sobre a mídia em mobile.
+- Sem `box-shadow` em nada.
 
 ### Integração
 
-`src/routes/index.tsx`: `<Servicos />` após `<HeroCompare />`. Nav já linka `#servicos`; `scroll-margin-top: 80px` global cuida do offset.
+- `Obras.tsx`: `const [openIdx, setOpenIdx] = useState<number|null>(null)`, `returnFocusRef = useRef<HTMLElement|null>(null)`. `openLightbox(obra, buttonEl)` grava o botão e o índice **na lista filtrada**.
+- `Obras` passa `list={filtered}`, `index={openIdx}`, `onClose`, `onIndexChange` ao lightbox.
+- `src/routes/index.tsx`: `<Obras />` após `<Servicos />`.
+
+### Acessibilidade / performance
+
+- Todas as thumbs `loading="lazy"`, `decoding="async"`, `width/height` explícitos (anti-CLS).
+- `useReducedMotion` cobre motion; `@media (prefers-reduced-motion: reduce)` cobre transforms residuais.
+- Foco visível global (etapa 1) aplica-se a todos os `<button>`.
 
 ### Fora de escopo
 
-Etapas 4–7. Sem fotos reais (Unsplash fixas marcadas TODO), sem CMS, sem filtro.
+Etapas 5–7. Sem carrossel de múltiplas fotos por obra, sem paginação, sem CMS.
