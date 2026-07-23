@@ -1,85 +1,148 @@
-## Etapa 2 — Hero "A Revelação"
+## Etapa 3 (final) — Serviços: lista-acordeão editorial
 
-Único componente novo: comparador antes/depois full-bleed com conteúdo sobreposto no terço inferior.
+Fundo `--concreto`, âncora `#servicos`. Sem grid de cards, sem sombras, sem opacidade em texto (`--grafite` sobre `--concreto` = 5,34:1, AA).
 
-### Imagens (via IA, salvas no projeto)
+### Copy
 
-Gerar duas imagens **16:9** consistentes entre si (mesma fachada, mesmo enquadramento):
-- `src/assets/hero-antes.jpg` (1792×1008) — fachada crua/desbotada: reboco manchado, tinta descascando, mofo em pontos, luz de fim de tarde, sem pessoas.
-- `src/assets/hero-depois.jpg` (1792×1008) — mesma fachada acabada: pintura uniforme cor concreto claro, textura fina, esquadrias limpas, mesma luz.
+- Eyebrow (JetBrains Mono 12px, tracking 0.16em, `--grafite`): `SISTEMAS APLICADOS`
+- H2 (Anton, `--text-h2`, `--cal`): `O ACABAMENTO COMEÇA ANTES DA TINTA`
 
-Uso `imagegen--generate_image` (model `standard`) com prompts detalhados que garantem enquadramento idêntico. Importadas como ES module (`import antes from "@/assets/hero-antes.jpg"`) — dimensões explícitas no `<img width={1792} height={1008}>` para evitar CLS.
+### Dados: `src/data/servicos.ts`
 
-### Componente `src/components/site/HeroCompare.tsx`
-
-Estrutura:
+```ts
+export type Servico = {
+  id: string;
+  nome: string;
+  aplicacao: string;
+  paragrafos: [string, string];
+  sistemas: string[];
+  thumb: string; // URL fixa images.unsplash.com/photo-{id}?w=400&h=280&fit=crop
+};
 ```
-<section class="relative w-screen" style="height: 92vh">   ← full-bleed, sai do container
-  <div class="absolute inset-0">                            ← palco do comparador
-    <img antes />                                           ← camada inferior, object-cover
-    <div style="clip-path: inset(0 calc(100% - X%) 0 0)">   ← camada superior
-      <img depois />
-    </div>
-    <div role="slider" ...>                                  ← trilho + alça
-      <div class="line" />                                   ← 2px --laranja
-      <button class="handle" />                              ← alça circular
-    </div>
-    <div class="gradient" />                                ← --breu 0% → 85% (bottom)
+
+Miniaturas: URLs **diretas e fixas** de `https://images.unsplash.com/photo-{id}?w=400&h=280&fit=crop&auto=format` — uma por slug, escolhidas manualmente, mesma imagem a cada build. Cada item recebe `// TODO: substituir por foto real da obra`.
+
+Parágrafos com voz técnica: preparo (lixamento, remoção de partes soltas, tratamento de mofo com solução fungicida, massa PVA/acrílica, selador), sistema (produto + camadas + intervalo entre demãos), número de demãos e durabilidade em anos, onde faz sentido. Proibido: "soluções", "personalizadas", "alto padrão", "qualidade", "excelência".
+
+### Revelação de seção — sem clip-path residual
+
+Utilitário em `src/styles.css`:
+```css
+.section-reveal { clip-path: inset(0 0 100% 0); }
+.section-reveal[data-revealing="true"] {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.section-reveal[data-revealed="true"] { clip-path: none; }
+@media (prefers-reduced-motion: reduce) {
+  .section-reveal { clip-path: none; }
+}
+```
+
+Fluxo no componente:
+1. `IntersectionObserver` (threshold 0.2), uma vez → `observer.disconnect()`; set `data-revealing="true"`.
+2. `transitionend` (propriedade `clip-path`) → remove `data-revealing`, set `data-revealed="true"` (aplica `clip-path: none`, elimina o containing block).
+3. `prefers-reduced-motion`: marca `data-revealed="true"` direto no mount, sem observer.
+
+**Convenção do projeto** (documentar em `.lovable/plan.md` para etapas 4+): modal, lightbox e qualquer overlay **em portal no `document.body`**, nunca dentro de uma seção com `.section-reveal`.
+
+### Componente `src/components/site/Servicos.tsx`
+
+```
+<section id="servicos" class="section-y" style="background: var(--color-concreto); position: relative">
+  <div class="container-stckel section-reveal" ref={sectionRef}>
+    <header>eyebrow + h2</header>
+    <ul role="list" onPointerMove={onMove} onPointerLeave={hide}>
+      {servicos.map(s => <ServicoLinha ... />)}
+    </ul>
   </div>
-  <div class="content">…eyebrow, h1, sub, ações, faixa…</div>
+  <ThumbFollower ref={thumbRef} items={servicos} activeId={hoverId} />
 </section>
 ```
 
-Controle da posição `pos` (0–100, default 50):
-- **Mouse**: `onPointerDown` no trilho/alça → `setPointerCapture` → `pointermove` calcula `pos` a partir do `getBoundingClientRect` do palco. `pointerup`/`pointercancel` liberam.
-- **Toque**: mesmo handler (`pointer` events cobrem touch). Alça e trilho recebem `touch-action: none` para não bloquear scroll fora e não brigar com pan-y do restante da página. O resto da section fica com `touch-action: pan-y` (scroll normal).
-- **Teclado**: `role="slider"`, `tabIndex=0`, `aria-label="Comparar antes e depois"`, `aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(pos)}`. Setas ←/→ movem 5%, Home/End vão para 0/100, PageUp/PageDown movem 10%. `preventDefault` só nessas teclas.
+### Cada linha — semântica com heading
 
-Animação de entrada (uma única vez):
-- Estado `intro` inicia `true`. Em `useEffect`:
-  - Se `matchMedia('(prefers-reduced-motion: reduce)').matches` → `pos = 50`, `intro = false`, sem animação.
-  - Senão: `pos = 35`, dispara `requestAnimationFrame` com easing `cubic-bezier(0.22,1,0.36,1)` durante 900ms até 65%, depois `pos = 50` estabilizado e `intro = false`. Se o usuário interage antes, cancelamos o rAF e mantemos onde ele largou.
-  - Interação após intro nunca reativa. Sem loop.
+```
+<li data-servico-id={id} class="linha">
+  <h3 class="linha-head">
+    <button aria-expanded={open} aria-controls={"painel-"+id} id={"trigger-"+id} class="linha-inner">
+      <span class="nome">{nome}</span>
+      <span class="aplicacao">{aplicacao}</span>
+    </button>
+  </h3>
+  <div id={"painel-"+id} role="region" aria-labelledby={"trigger-"+id}
+       class="painel" data-open={open} {...(!open && { inert: "" })}>
+    <div class="painel-inner">
+      <p>{p1}</p><p>{p2}</p>
+      <p class="sistemas">SISTEMAS: {sistemas.join(" · ")}</p>
+    </div>
+  </div>
+</li>
+```
 
-Alça circular:
-- 40×40, fundo `--cal`, borda 2px `--laranja`, sombra sutil (`box-shadow: 0 0 0 8px color-mix(in oklab, var(--color-breu) 40%, transparent)`), ícone `‹ ›` interno em SVG. `min-h-11 min-w-11` respeitado.
-- Linha vertical 2px `--laranja` ligada à alça, ocupa 100% da altura.
+- `.linha-head`: `margin: 0; font: inherit; font-weight: inherit;` — só estrutura, sem estilo próprio. Hierarquia final: h2 (seção) → h3 (cada serviço).
+- `<li>`: `border-top: 1px solid var(--color-hairline)`; último recebe `border-bottom`. Nunca transformado.
+- `.linha-inner`: `<button>` largura total, grid `1fr auto` em ≥768px, padding-block 28px, text-align left, background transparente.
+- `.nome`: Anton, `clamp(1.5rem, 6vw, 2rem)`, line-height 0.95, `--cal`, uppercase, letter-spacing -0.01em.
+- `.aplicacao`: JetBrains Mono 12px, tracking 0.12em, `--grafite`, uppercase.
+- **Mobile <768px**: `.linha-inner` vira flex column gap 6px — aplicação abaixo do nome.
+- **Hover desktop** (`@media (hover: hover) and (pointer: fine)`):
+  - `transform: translateX(8px)` só em `.linha-inner`, transição 220ms `cubic-bezier(0.22,1,0.36,1)`.
+  - `.linha-inner:hover .nome`, `.linha[data-open="true"] .nome` → `color: var(--color-laranja)`.
+  - Bordas do `<li>` ficam paradas.
+- Sem `box-shadow` em nada.
 
-Gradiente de contraste (garantia AA):
-- `background: linear-gradient(to bottom, transparent 0%, transparent 30%, color-mix(in oklab, var(--color-breu) 85%, transparent) 100%)` — cobre toda a área, `pointer-events: none`, `z-index` acima das imagens e abaixo da alça.
+### Painel — animação sem salto de fechamento
 
-Conteúdo sobreposto (terço inferior, alinhado à esquerda):
-- Wrapper `.container-stckel absolute inset-x-0 bottom-0` com `padding-block-end: clamp(32px, 6vw, 72px)`, `pointer-events: none` no wrapper e `pointer-events: auto` só nos links/botões (para não roubar arrasto do slider).
-- Eyebrow: `CURITIBA · REGIÃO METROPOLITANA` em `--font-mono`, 12px, tracking 0.16em, cor `--grafite`.
-- H1: `A DIFERENÇA ESTÁ NA PREPARAÇÃO` — Anton, `clamp(2.75rem, 5vw + 1rem, 6rem)`, line-height 0.92, `--cal`, max ~18ch.
-- Sub: `Pintura, textura e revestimento com preparo de superfície feito do jeito certo. É por isso que o acabamento dura.` — Barlow 400, 1.375rem, `--grafite`, `max-width: 46ch`.
-- Ações (flex, gap 12px, wrap):
-  - `Ver obras entregues` → `<a href="#obras">`, sólido `--laranja` (hover `--brasa`), texto `--breu`, altura 48px, uppercase Barlow 600 tracking 0.08em.
-  - `Falar no WhatsApp` → `<a href="https://wa.me/5541998155076" target="_blank" rel="noreferrer noopener">`, fantasma, `border: 1px solid color-mix(in oklab, var(--color-cal) 24%, transparent)`, texto `--cal`, mesmas dimensões.
-- Faixa inferior (mt 32px, `--font-mono`, 12px, tracking 0.12em, cor `--grafite`), separadores `|` com 12px de margem:
-  `26 ANOS DE OFÍCIO  |  830 OBRAS ENTREGUES  |  EQUIPE PRÓPRIA`
-  Números estáticos, sem contador.
+```css
+.painel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 320ms cubic-bezier(0.22,1,0.36,1); }
+.painel[data-open="true"] { grid-template-rows: 1fr; }
+.painel-inner {
+  overflow: hidden;
+  visibility: hidden;
+  transition: visibility 0s linear 320ms;   /* fecha: só some após o colapso */
+}
+.painel[data-open="true"] .painel-inner {
+  visibility: visible;
+  transition: visibility 0s linear 0s;      /* abre: aparece imediatamente */
+}
+@media (prefers-reduced-motion: reduce) {
+  .painel, .painel-inner { transition: none; }
+}
+```
 
-Anti-CLS / anti-scroll-lock:
-- Section com `height: 92vh` fixo (não `min-height`).
-- `<img>` sempre com `width`/`height` explícitos + `object-cover` + `absolute inset-0 h-full w-full`.
-- Somente a alça e a linha carregam `touch-action: none`; a section carrega `touch-action: pan-y`. Isso permite scroll vertical no mobile em qualquer área que não seja a alça.
-- `will-change: clip-path` só durante interação (setado no pointerdown, removido no pointerup).
+Acessibilidade fora do fluxo quando fechado: atributo `inert` (spread condicional) + `visibility: hidden` como redundância para UAs sem suporte a `inert`.
+
+Estado: `openId: string | null` (só um aberto). Setas ↑/↓ movem foco entre triggers (`onKeyDown` no `<ul>`); Home/End primeiro/último; `preventDefault` só nessas teclas.
+
+Parágrafos: Barlow 400, ~1rem, `--grafite` (sem opacidade). Sistemas em JetBrains Mono 12px, `--grafite`.
+
+### ThumbFollower — sem mismatch, ref+rAF, só mouse
+
+`src/components/site/ThumbFollower.tsx`, montado **sempre** (nunca condicional por `useIsMobile()`, que causaria mismatch de hidratação):
+
+- Estado interno: `const [mounted, setMounted] = useState(false); useEffect(() => setMounted(true), []);` — só ativa após montagem no cliente.
+- CSS esconde definitivamente em toques/caneta: renderiza dentro de wrapper com `@media not all and (hover: hover) and (pointer: fine) { display: none; }`.
+- Props: `items`, `activeId: string | null`. Único estado React na página de serviços: `hoverId`.
+- Posição em `useRef`:
+  ```ts
+  const target = useRef({ x: 0, y: 0 });
+  const current = useRef({ x: 0, y: 0 });
+  const raf = useRef<number | null>(null);
+  ```
+- API imperativa via `useImperativeHandle`: `setTarget(x, y)`, `hide()`. Loop rAF: `current += (target - current) * 0.18`, escreve `node.style.transform = translate3d(x+20, y+20, 0)` direto no DOM. Cancela quando escondido.
+- Listener em `Servicos.tsx`: `onPointerMove` no `<ul>`.
+  - `if (!mounted || isMobile) return;` (guarda de listener; `useIsMobile` continua útil aqui, só não controla montagem).
+  - `if (e.pointerType !== "mouse") return;` — ignora caneta e toque.
+  - `const li = (e.target as HTMLElement).closest("[data-servico-id]"); if (!li) return;`
+  - Chama `thumb.setTarget(e.clientX, e.clientY)`; atualiza `hoverId` só quando muda.
+  - `onPointerLeave` do `<ul>` → `thumb.hide()` e `setHoverId(null)`.
+- Elemento: `<img width={200} height={140} loading="lazy" decoding="async">` com `border: 1px solid var(--color-hairline)`. **Sem sombra**. `position: fixed; top: 0; left: 0; pointer-events: none; will-change: transform;` — fade opacity 160ms ao aparecer/sumir. Escondido se `activeId === openId`.
 
 ### Integração
 
-`src/routes/index.tsx`:
-```tsx
-<Nav />
-<main id="main">
-  <HeroCompare />
-</main>
-<Footer />
-```
-Remover `min-h-screen` do `<main>` (agora o hero preenche 92vh; abaixo virá o resto nas próximas etapas).
+`src/routes/index.tsx`: `<Servicos />` após `<HeroCompare />`. Nav já linka `#servicos`; `scroll-margin-top: 80px` global cuida do offset.
 
-Nav já tem scroll-state a partir de 80px — o hero começa transparente sob a nav, logo o `pt-16` é dispensável porque a section é full-bleed e o gradiente inferior é onde mora o conteúdo (o topo pertence à imagem).
+### Fora de escopo
 
-### Fora de escopo (etapa 2)
-
-Seções seguintes (serviços, obras, sobre, contato), formulário real, i18n, animação de revelação clip-path das próximas seções.
+Etapas 4–7. Sem fotos reais (Unsplash fixas marcadas TODO), sem CMS, sem filtro.
