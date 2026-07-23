@@ -1,30 +1,52 @@
-# Melhorar legibilidade do hero
+## Etapa 5 — Método + A Stckel
 
-Todos os textos sobre a imagem estão com contraste fraco: subtítulo e métricas em `--grafite` (#8B8B93), gradiente cobrindo só o terço inferior e H1 em uppercase muito apertado no Outfit.
+Duas seções novas, sem tocar em hero, serviços ou obras.
 
-## Ajustes em `src/components/site/HeroCompare.tsx`
+### 1. `src/data/metodo.ts` (novo)
 
-**Gradiente de contraste (linha ~250):** ampliar a área escurecida e intensificar o breu no rodapé, para dar base sólida ao texto.
-- de: `transparent 0% → transparent 30% → breu 55% @65% → breu 85% @100%`
-- para: `transparent 0% → breu 20% @35% → breu 70% @65% → breu 92% @100%`
+Tipado, 4 passos com `indice` ("01"–"04"), `titulo` e `descricao` exatamente como enviados.
 
-**Eyebrow "Curitiba · Região Metropolitana":** trocar `color: --grafite` por `--cal` com opacidade 85% (`color-mix(in oklab, var(--color-cal) 85%, transparent)`).
+### 2. `src/components/site/Metodo.tsx` (novo)
 
-**H1:** manter Outfit mas
-- remover `textTransform: uppercase` (Outfit institucional lê melhor em Title Case),
-- trocar texto para Title Case: "A diferença está na preparação",
-- `line-height: 1.05`, `font-weight: 600`, `letter-spacing: -0.02em`,
-- adicionar leve `text-shadow: 0 2px 24px color-mix(in oklab, var(--color-breu) 60%, transparent)` para descolar da imagem.
+- `<section id="metodo">` fundo `--massa`, `section-y`, `container-stckel`.
+- Header: eyebrow mono "COMO TRABALHAMOS" + h2 "Ordem que aparece no acabamento" (ou similar curto), mesmo padrão de Serviços.
+- Timeline:
+  - **Desktop (≥768px):** grid 4 colunas, régua hairline horizontal atrás dos pontos (linha absoluta 1px em `--hairline`, ponto 10px `--laranja` sobre a régua). Índice grande em `--laranja` Figtree mono (`clamp(2.5rem, 1.5rem+2vw, 3.5rem)`, `font-weight: 500`, `letter-spacing: -0.02em`). Título Outfit uppercase 14px letra travada. Descrição Figtree 15px `--cal` a 85%.
+  - **Mobile:** vertical, régua vertical hairline à esquerda com pontos, mesmo conteúdo empilhado.
+- Reveal: reusa `.section-reveal` + IO já existente (padrão de Serviços/Obras).
 
-**Parágrafo lead:** trocar `--grafite` por `--cal` puro, `font-weight: 400`, `font-size: clamp(1.05rem, 0.9rem + 0.6vw, 1.25rem)` (estava fixo em 1.375rem, grande demais em telas médias e cansando a leitura).
+### 3. Imagem equipe
 
-**Métricas do rodapé (ul):** trocar `--grafite` por `--cal` a 90%, aumentar `font-size` para 13px, e trocar o separador `|` de `--hairline` (quase invisível) para `--laranja` a 60%.
+Gerar `src/assets/equipe-stckel.jpg` (fast tier, 1600×1200) — equipe de pintores em obra real em Curitiba, roupa de trabalho, andaime, fachada em preparo, foto documental, luz natural. Salva em cores; o duotone é aplicado via CSS.
 
-**Chips "Antes/Depois":** aumentar o fundo do chip "Antes" de 70% para 85% de breu para não sumir sobre a foto clara.
+### 4. `src/components/site/SobreStckel.tsx` (novo)
 
-**Botão secundário WhatsApp:** subir a borda de 24% para 55% de cal, para o CTA secundário parar de desaparecer.
+- `<section id="sobre">` fundo `--breu`, `section-y`, `container-stckel`.
+- Grid 12 col: coluna esquerda `span 5`, direita `span 7`, gap `clamp(32px, 5vw, 80px)`. Mobile: coluna única, imagem primeiro.
+- **Esquerda — foto duotone:**
+  - `<figure>` com `<img>` da equipe + camada `::after` (via wrapper div) em `--laranja` a 15%, `mix-blend-mode: multiply`.
+  - `<img>` com `filter: grayscale(1) contrast(1.05)` para o preto e branco.
+  - Aspect ratio 4/5, borda hairline.
+- **Direita:**
+  - Eyebrow mono "A STCKEL".
+  - h2 curto Outfit ("Ofício que se vê na parede" — marcador).
+  - 2–3 parágrafos Figtree 17px `--cal` 85%, `max-width: 60ch`, `// TODO: texto real da empresa` no topo do arquivo.
+  - Assinatura: hairline superior + `<Logo />` + linha mono `CURITIBA · PR · DESDE 2000` (marcador).
+  - Todo o bloco de texto marcado com `// TODO: texto real da empresa`.
 
-## Fora de escopo
+### 5. `src/routes/index.tsx`
 
-- Não mexer no comparador, nas imagens, no slider, nas animações nem no layout geral.
-- Sem trocar fontes (Outfit + Figtree já aprovadas).
+Ordem final do `<main>`:
+`HeroCompare → Servicos → Metodo → Obras → SobreStckel`.
+
+Método entre Serviços e Obras (fluxo: o que fazemos → como fazemos → o que já entregamos → quem somos).
+
+### 6. `src/styles.css`
+
+Adicionar bloco `/* ===== Método ===== */` com a régua horizontal/vertical, pontos e estilos da timeline. Adicionar `/* ===== Sobre ===== */` com o wrapper duotone (`.sobre-foto` + `.sobre-foto::after`).
+
+### Fora de escopo
+
+- Nada de animação de contagem, ícones ou cards.
+- Não mexer em nav/footer/hero/serviços/obras.
+- Sem alterar tokens nem tipografia.
