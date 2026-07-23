@@ -130,7 +130,7 @@ export function Servicos() {
         >
           {servicos.map((s) => {
             const open = openId === s.id;
-            const painelProps = open ? {} : { inert: "" };
+            const painelProps: { inert?: boolean } = open ? {} : { inert: true };
             return (
               <li
                 key={s.id}
