@@ -16,9 +16,9 @@
   --color-hairline: color-mix(in oklab, var(--color-cal) 8%, transparent);
 
   /* Typography */
-  --font-display: "Anton", "Barlow Condensed", sans-serif;
-  --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Figtree", ui-sans-serif, system-ui, sans-serif;
 
   /* Fluid type scale */
   --text-caption: 0.75rem;
