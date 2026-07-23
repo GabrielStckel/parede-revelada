@@ -166,11 +166,12 @@ export function HeroCompare() {
             textTransform: "uppercase",
             color: "var(--color-cal)",
             padding: "6px 10px",
-            backgroundColor: "color-mix(in oklab, var(--color-breu) 70%, transparent)",
+            backgroundColor: "color-mix(in oklab, var(--color-breu) 85%, transparent)",
             border: "1px solid var(--color-hairline)",
           }}
         >
           Antes
+
         </span>
         <span
           aria-hidden="true"
