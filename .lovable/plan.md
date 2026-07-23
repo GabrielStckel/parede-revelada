@@ -1,30 +1,30 @@
-# Trocar tipografia para padrão institucional
+# Melhorar legibilidade do hero
 
-## Mudança
+Todos os textos sobre a imagem estão com contraste fraco: subtítulo e métricas em `--grafite` (#8B8B93), gradiente cobrindo só o terço inferior e H1 em uppercase muito apertado no Outfit.
 
-Substituir Anton / Barlow / JetBrains Mono por **Outfit** (títulos) + **Figtree** (corpo e mono/rótulos técnicos). Mantém legibilidade institucional, sem serifa, sem cara de "brutalist de obra".
+## Ajustes em `src/components/site/HeroCompare.tsx`
 
-## Arquivos
+**Gradiente de contraste (linha ~250):** ampliar a área escurecida e intensificar o breu no rodapé, para dar base sólida ao texto.
+- de: `transparent 0% → transparent 30% → breu 55% @65% → breu 85% @100%`
+- para: `transparent 0% → breu 20% @35% → breu 70% @65% → breu 92% @100%`
 
-### `src/routes/__root.tsx`
-Trocar o `<link>` de Google Fonts:
-```
-https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Figtree:wght@400;500;600&display=swap
-```
+**Eyebrow "Curitiba · Região Metropolitana":** trocar `color: --grafite` por `--cal` com opacidade 85% (`color-mix(in oklab, var(--color-cal) 85%, transparent)`).
 
-### `src/styles.css`
-Atualizar os tokens em `@theme`:
-- `--font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;`
-- `--font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;`
-- `--font-mono: "Figtree", ui-sans-serif, system-ui, sans-serif;` (rótulos técnicos continuam usando `var(--font-mono)` — mantém letter-spacing/uppercase existentes, só muda a família)
+**H1:** manter Outfit mas
+- remover `textTransform: uppercase` (Outfit institucional lê melhor em Title Case),
+- trocar texto para Title Case: "A diferença está na preparação",
+- `line-height: 1.05`, `font-weight: 600`, `letter-spacing: -0.02em`,
+- adicionar leve `text-shadow: 0 2px 24px color-mix(in oklab, var(--color-breu) 60%, transparent)` para descolar da imagem.
 
-Ajustes finos no `@layer base`:
-- `h1, h2`: manter `font-family: var(--font-display)` mas subir `font-weight` para `600` e `line-height: 1` (Outfit não tem o peso condensado do Anton, então precisa de mais weight para manter presença visual).
-- Manter `text-transform: uppercase` e `letter-spacing: -0.01em` nos títulos.
+**Parágrafo lead:** trocar `--grafite` por `--cal` puro, `font-weight: 400`, `font-size: clamp(1.05rem, 0.9rem + 0.6vw, 1.25rem)` (estava fixo em 1.375rem, grande demais em telas médias e cansando a leitura).
 
-Não mexer em nenhum outro token, layout, cor ou animação.
+**Métricas do rodapé (ul):** trocar `--grafite` por `--cal` a 90%, aumentar `font-size` para 13px, e trocar o separador `|` de `--hairline` (quase invisível) para `--laranja` a 60%.
+
+**Chips "Antes/Depois":** aumentar o fundo do chip "Antes" de 70% para 85% de breu para não sumir sobre a foto clara.
+
+**Botão secundário WhatsApp:** subir a borda de 24% para 55% de cal, para o CTA secundário parar de desaparecer.
 
 ## Fora de escopo
 
-- Nenhuma mudança em componentes, layouts, cores ou comportamento.
-- Nada de instalar `@fontsource-*` — mantém carregamento via `<link>` como já está no root.
+- Não mexer no comparador, nas imagens, no slider, nas animações nem no layout geral.
+- Sem trocar fontes (Outfit + Figtree já aprovadas).

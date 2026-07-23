@@ -166,11 +166,12 @@ export function HeroCompare() {
             textTransform: "uppercase",
             color: "var(--color-cal)",
             padding: "6px 10px",
-            backgroundColor: "color-mix(in oklab, var(--color-breu) 70%, transparent)",
+            backgroundColor: "color-mix(in oklab, var(--color-breu) 85%, transparent)",
             border: "1px solid var(--color-hairline)",
           }}
         >
           Antes
+
         </span>
         <span
           aria-hidden="true"
@@ -243,13 +244,13 @@ export function HeroCompare() {
           </span>
         </div>
 
-        {/* Contrast gradient — AA safety over bottom third */}
+        {/* Contrast gradient — AA safety over bottom two-thirds */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-10"
           style={{
             background:
-              "linear-gradient(to bottom, transparent 0%, transparent 30%, color-mix(in oklab, var(--color-breu) 55%, transparent) 65%, color-mix(in oklab, var(--color-breu) 85%, transparent) 100%)",
+              "linear-gradient(to bottom, transparent 0%, color-mix(in oklab, var(--color-breu) 20%, transparent) 35%, color-mix(in oklab, var(--color-breu) 70%, transparent) 65%, color-mix(in oklab, var(--color-breu) 92%, transparent) 100%)",
           }}
         />
       </div>
@@ -267,7 +268,7 @@ export function HeroCompare() {
               fontSize: "12px",
               letterSpacing: "0.16em",
               textTransform: "uppercase",
-              color: "var(--color-grafite)",
+              color: "color-mix(in oklab, var(--color-cal) 85%, transparent)",
               marginBottom: "16px",
             }}
           >
@@ -277,12 +278,13 @@ export function HeroCompare() {
             style={{
               fontFamily: "var(--font-display)",
               fontSize: "clamp(2.75rem, 5vw + 1rem, 6rem)",
-              lineHeight: 0.92,
-              letterSpacing: "-0.01em",
-              textTransform: "uppercase",
+              lineHeight: 1.05,
+              letterSpacing: "-0.02em",
+              fontWeight: 600,
               color: "var(--color-cal)",
               maxWidth: "18ch",
               marginBottom: "20px",
+              textShadow: "0 2px 24px color-mix(in oklab, var(--color-breu) 60%, transparent)",
             }}
           >
             A diferença está na preparação
@@ -291,9 +293,9 @@ export function HeroCompare() {
             style={{
               fontFamily: "var(--font-sans)",
               fontWeight: 400,
-              fontSize: "1.375rem",
-              lineHeight: 1.35,
-              color: "var(--color-grafite)",
+              fontSize: "clamp(1.05rem, 0.9rem + 0.6vw, 1.25rem)",
+              lineHeight: 1.45,
+              color: "var(--color-cal)",
               maxWidth: "46ch",
               marginBottom: "28px",
             }}
@@ -330,7 +332,7 @@ export function HeroCompare() {
                 height: "48px",
                 backgroundColor: "transparent",
                 color: "var(--color-cal)",
-                border: "1px solid color-mix(in oklab, var(--color-cal) 24%, transparent)",
+                border: "1px solid color-mix(in oklab, var(--color-cal) 55%, transparent)",
                 fontFamily: "var(--font-sans)",
                 fontWeight: 600,
                 fontSize: "13px",
@@ -341,7 +343,7 @@ export function HeroCompare() {
                 e.currentTarget.style.borderColor = "var(--color-cal)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "color-mix(in oklab, var(--color-cal) 24%, transparent)";
+                e.currentTarget.style.borderColor = "color-mix(in oklab, var(--color-cal) 55%, transparent)";
               }}
             >
               Falar no WhatsApp
@@ -353,18 +355,19 @@ export function HeroCompare() {
             style={{
               fontFamily: "var(--font-mono)",
               fontWeight: 500,
-              fontSize: "12px",
+              fontSize: "13px",
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              color: "var(--color-grafite)",
+              color: "color-mix(in oklab, var(--color-cal) 90%, transparent)",
             }}
           >
             <li>26 Anos de ofício</li>
-            <li aria-hidden="true" style={{ color: "var(--color-hairline)" }}>|</li>
+            <li aria-hidden="true" style={{ color: "color-mix(in oklab, var(--color-laranja) 60%, transparent)" }}>|</li>
             <li>830 Obras entregues</li>
-            <li aria-hidden="true" style={{ color: "var(--color-hairline)" }}>|</li>
+            <li aria-hidden="true" style={{ color: "color-mix(in oklab, var(--color-laranja) 60%, transparent)" }}>|</li>
             <li>Equipe própria</li>
           </ul>
+
         </div>
       </div>
     </section>
