@@ -26,15 +26,6 @@ export function Obras() {
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const reduce = useReducedMotion();
 
-  // Reveal via IntersectionObserver
-  const [revealState, setRevealState] = useState<"idle" | "revealing" | "revealed">(
-    "idle",
-  );
-  useMemo(() => {
-    if (typeof window === "undefined") return;
-    const el = sectionRef.current;
-    if (!el || revealState !== "idle") return;
-  }, [revealState]);
 
   const filtered = useMemo(
     () => (cat === "todas" ? OBRAS : OBRAS.filter((o) => o.categoria === cat)),
