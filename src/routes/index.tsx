@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
+import { HeroCompare } from "@/components/site/HeroCompare";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -28,7 +29,9 @@ function Index() {
   return (
     <>
       <Nav />
-      <main id="main" className="min-h-screen" />
+      <main id="main">
+        <HeroCompare />
+      </main>
       <Footer />
     </>
   );
