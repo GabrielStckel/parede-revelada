@@ -26,6 +26,36 @@ export function Obras() {
   const returnFocusRef = useRef<HTMLElement | null>(null);
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const reduce = useReducedMotion();
+  const trackRef = useRef<HTMLUListElement | null>(null);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(true);
+
+  const updateNav = () => {
+    const el = trackRef.current;
+    if (!el) return;
+    setCanPrev(el.scrollLeft > 4);
+    setCanNext(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  };
+
+  useEffect(() => {
+    updateNav();
+    const el = trackRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", updateNav, { passive: true });
+    window.addEventListener("resize", updateNav);
+    return () => {
+      el.removeEventListener("scroll", updateNav);
+      window.removeEventListener("resize", updateNav);
+    };
+  }, []);
+
+  const scrollByDir = (dir: 1 | -1) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const first = el.querySelector<HTMLElement>(".obra-item");
+    const step = first ? first.getBoundingClientRect().width + 20 : el.clientWidth * 0.9;
+    el.scrollBy({ left: dir * step, behavior: "smooth" });
+  };
 
 
   const filtered = useMemo(
