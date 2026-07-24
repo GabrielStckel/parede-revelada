@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "./Logo";
 import { lock, unlock } from "@/lib/scroll-lock";
+import { buildWhatsAppLink } from "@/lib/whatsapp";
 
 const LINKS = [
   { href: "#servicos", label: "Serviços", id: "servicos" },
@@ -123,7 +124,9 @@ export function Nav() {
                 </a>
               ))}
               <a
-                href="#contato"
+                href={buildWhatsAppLink()}
+                target="_blank"
+                rel="noreferrer noopener"
                 className="inline-flex h-11 items-center justify-center px-5 text-[13px] uppercase tracking-[0.08em] text-[color:var(--color-breu)] transition-colors"
                 style={{
                   fontFamily: "var(--font-sans)",
