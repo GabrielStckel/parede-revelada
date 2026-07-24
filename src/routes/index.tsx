@@ -8,7 +8,8 @@ import { Obras } from "@/components/site/Obras";
 import { SobreStckel } from "@/components/site/SobreStckel";
 import { Contato, WhatsAppFab } from "@/components/site/Contato";
 import { Toaster } from "@/components/ui/sonner";
-import heroDepoisUrl from "@/assets/hero-depois.jpg";
+import heroDepois1600 from "@/assets/hero-depois-1600.webp";
+import heroDepois800 from "@/assets/hero-depois-800.webp";
 
 const SITE_URL = "https://stckelpinturas.com.br";
 const OG_IMAGE = `${SITE_URL}${heroDepoisUrl}`;
