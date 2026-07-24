@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import antesSrc from "@/assets/hero-antes.jpg";
 import depoisSrc from "@/assets/hero-depois.jpg";
-import { buildWhatsAppLink } from "@/lib/whatsapp";
 
 const IMG_W = 1792;
 const IMG_H = 1024;
@@ -325,51 +324,38 @@ export function HeroCompare() {
           </p>
 
 
-          <div className="hero-ctas flex flex-wrap items-center gap-3">
-            <a
-              href="#obras"
-              className="pointer-events-auto inline-flex items-center justify-center px-6 transition-colors"
-              style={{
-                height: "48px",
-                backgroundColor: "var(--color-laranja)",
-                color: "var(--color-breu)",
-                fontFamily: "var(--font-sans)",
-                fontWeight: 600,
-                fontSize: "13px",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-brasa)")}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--color-laranja)")}
-            >
-              Ver obras entregues
-            </a>
-            <a
-              href={buildWhatsAppLink()}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="pointer-events-auto inline-flex items-center justify-center px-6 transition-colors"
-              style={{
-                height: "48px",
-                backgroundColor: "transparent",
-                color: "var(--color-cal)",
-                border: "1px solid color-mix(in oklab, var(--color-cal) 55%, transparent)",
-                fontFamily: "var(--font-sans)",
-                fontWeight: 600,
-                fontSize: "13px",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "var(--color-cal)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "color-mix(in oklab, var(--color-cal) 55%, transparent)";
-              }}
-            >
-              Falar no WhatsApp
-            </a>
+          <div
+            role="button"
+            tabIndex={0}
+            aria-label="Arraste para comparar antes e depois"
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            onPointerCancel={onPointerUp}
+            onKeyDown={onKeyDown}
+            className="pointer-events-auto inline-flex items-center gap-3 select-none"
+            style={{
+              height: "56px",
+              padding: "0 20px",
+              backgroundColor: "var(--color-laranja)",
+              color: "var(--color-breu)",
+              fontFamily: "var(--font-mono)",
+              fontWeight: 500,
+              fontSize: "12px",
+              letterSpacing: "0.16em",
+              textTransform: "uppercase",
+              cursor: "ew-resize",
+              touchAction: "none",
+              boxShadow:
+                "0 8px 24px color-mix(in oklab, var(--color-breu) 70%, transparent)",
+            }}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M10 5l-6 7 6 7M14 5l6 7-6 7" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span>Arraste · Antes / Depois</span>
           </div>
+
 
           <ul
             className="hero-metricas mt-8 flex flex-wrap items-center gap-x-3 gap-y-2"
