@@ -1,4 +1,5 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   OBRAS,
@@ -25,6 +26,36 @@ export function Obras() {
   const returnFocusRef = useRef<HTMLElement | null>(null);
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const reduce = useReducedMotion();
+  const trackRef = useRef<HTMLUListElement | null>(null);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(true);
+
+  const updateNav = () => {
+    const el = trackRef.current;
+    if (!el) return;
+    setCanPrev(el.scrollLeft > 4);
+    setCanNext(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  };
+
+  useEffect(() => {
+    updateNav();
+    const el = trackRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", updateNav, { passive: true });
+    window.addEventListener("resize", updateNav);
+    return () => {
+      el.removeEventListener("scroll", updateNav);
+      window.removeEventListener("resize", updateNav);
+    };
+  }, []);
+
+  const scrollByDir = (dir: 1 | -1) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const first = el.querySelector<HTMLElement>(".obra-item");
+    const step = first ? first.getBoundingClientRect().width + 20 : el.clientWidth * 0.9;
+    el.scrollBy({ left: dir * step, behavior: "smooth" });
+  };
 
 
   const filtered = useMemo(
@@ -94,37 +125,62 @@ export function Obras() {
             role="group"
             aria-label="Filtrar obras"
             className="obras-filtros"
+            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}
           >
-            {FILTROS.map((f) => {
-              const active = cat === f.key;
-              return (
-                <button
-                  key={f.key}
-                  type="button"
-                  aria-pressed={active}
-                  onClick={() => setCat(f.key)}
-                  className="obras-filtro"
-                  data-active={active}
-                >
-                  <span>{f.label}</span>
-                  <span className="obras-filtro-count">({counts[f.key]})</span>
-                </button>
-              );
-            })}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 20px" }}>
+              {FILTROS.map((f) => {
+                const active = cat === f.key;
+                return (
+                  <button
+                    key={f.key}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => { setCat(f.key); requestAnimationFrame(() => { trackRef.current?.scrollTo({ left: 0 }); updateNav(); }); }}
+                    className="obras-filtro"
+                    data-active={active}
+                  >
+                    <span>{f.label}</span>
+                    <span className="obras-filtro-count">({counts[f.key]})</span>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="obras-nav" aria-label="Navegar obras">
+              <button
+                type="button"
+                className="obras-nav-btn"
+                onClick={() => scrollByDir(-1)}
+                disabled={!canPrev}
+                aria-label="Obra anterior"
+              >
+                <ChevronLeft size={20} strokeWidth={1.5} />
+              </button>
+              <button
+                type="button"
+                className="obras-nav-btn"
+                onClick={() => scrollByDir(1)}
+                disabled={!canNext}
+                aria-label="Próxima obra"
+              >
+                <ChevronRight size={20} strokeWidth={1.5} />
+              </button>
+            </div>
           </div>
 
-          <div className="obras-scroll">
+
+          <div className="obras-carousel">
             <motion.ul
-              className="obras-grid"
+              ref={trackRef}
+              className="obras-track"
               layout={!reduce}
               aria-live="polite"
+              onAnimationComplete={updateNav}
             >
               <AnimatePresence mode="popLayout" initial={false}>
                 {filtered.map((obra) => (
                   <motion.li
                     key={obra.id}
                     layout={!reduce}
-                    data-span={obra.span}
                     className="obra-item"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
