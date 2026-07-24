@@ -38,7 +38,7 @@
 }
 
 @utility section-y {
-  padding-block: clamp(96px, 12vw, 160px);
+  padding-block: clamp(64px, 8vw, 112px);
 }
 
 @theme inline {
