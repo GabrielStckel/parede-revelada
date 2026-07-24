@@ -1,5 +1,5 @@
 // TODO: texto real da empresa
-import equipeImg from "@/assets/equipe-stckel.jpg";
+import equipeImg from "@/assets/equipe-stckel-1400.webp";
 import { Logo } from "./Logo";
 
 export function SobreStckel() {
