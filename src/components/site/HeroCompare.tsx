@@ -119,7 +119,8 @@ export function HeroCompare() {
       aria-label="Fachada antes e depois"
       className="relative w-screen overflow-hidden"
       style={{
-        height: "92vh",
+        height: "min(88svh, 760px)",
+        minHeight: "560px",
         marginLeft: "calc(50% - 50vw)",
         marginRight: "calc(50% - 50vw)",
         backgroundColor: "var(--color-breu)",
@@ -163,8 +164,9 @@ export function HeroCompare() {
         {/* Label chips */}
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute left-4 top-4 md:left-6 md:top-6"
+          className="pointer-events-none absolute left-4 md:left-6"
           style={{
+            top: "calc(64px + env(safe-area-inset-top, 0px) + 12px)",
             fontFamily: "var(--font-mono)",
             fontWeight: 500,
             fontSize: "11px",
@@ -177,12 +179,12 @@ export function HeroCompare() {
           }}
         >
           Antes
-
         </span>
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute right-4 top-4 md:right-6 md:top-6"
+          className="pointer-events-none absolute right-4 md:right-6"
           style={{
+            top: "calc(64px + env(safe-area-inset-top, 0px) + 12px)",
             fontFamily: "var(--font-mono)",
             fontWeight: 500,
             fontSize: "11px",
@@ -283,13 +285,13 @@ export function HeroCompare() {
           <h1
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: "clamp(2.75rem, 5vw + 1rem, 6rem)",
+              fontSize: "clamp(2rem, 6vw + 0.5rem, 4.5rem)",
               lineHeight: 1.05,
               letterSpacing: "-0.02em",
               fontWeight: 600,
               color: "var(--color-cal)",
-              maxWidth: "18ch",
-              marginBottom: "20px",
+              maxWidth: "16ch",
+              marginBottom: "16px",
               textShadow: "0 2px 24px color-mix(in oklab, var(--color-breu) 60%, transparent)",
             }}
           >
@@ -299,11 +301,11 @@ export function HeroCompare() {
             style={{
               fontFamily: "var(--font-sans)",
               fontWeight: 400,
-              fontSize: "clamp(1.05rem, 0.9rem + 0.6vw, 1.25rem)",
+              fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.15rem)",
               lineHeight: 1.45,
               color: "var(--color-cal)",
-              maxWidth: "46ch",
-              marginBottom: "28px",
+              maxWidth: "44ch",
+              marginBottom: "24px",
             }}
           >
             Pintura, textura e revestimento com preparo de superfície feito do jeito

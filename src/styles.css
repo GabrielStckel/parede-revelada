@@ -25,10 +25,10 @@
   --text-caption: 0.75rem;
   --text-small: 0.875rem;
   --text-body: 1rem;
-  --text-lead: clamp(1.125rem, 0.9rem + 0.6vw, 1.375rem);
-  --text-h3: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem);
-  --text-h2: clamp(2.5rem, 1.6rem + 3.6vw, 4.5rem);
-  --text-h1: clamp(3.25rem, 2rem + 5.4vw, 6.5rem);
+  --text-lead: clamp(1rem, 0.9rem + 0.4vw, 1.2rem);
+  --text-h3: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+  --text-h2: clamp(2rem, 1.4rem + 2.4vw, 3.25rem);
+  --text-h1: clamp(2.5rem, 1.6rem + 3.2vw, 4.75rem);
 }
 
 @utility container-stckel {
@@ -38,7 +38,7 @@
 }
 
 @utility section-y {
-  padding-block: clamp(96px, 12vw, 160px);
+  padding-block: clamp(64px, 8vw, 112px);
 }
 
 @theme inline {
@@ -354,18 +354,7 @@
 .obras-filtro-count { opacity: 0.7; font-size: 10px; }
 
 .obras-scroll {
-  max-height: min(70vh, 720px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding-right: 8px;
-  scrollbar-gutter: stable;
-  mask-image: linear-gradient(
-    to bottom,
-    transparent 0,
-    #000 24px,
-    #000 calc(100% - 32px),
-    transparent 100%
-  );
+  /* rolagem natural: seção flui com a página, sem scroll interno */
 }
 .obras-grid {
   list-style: none;
@@ -684,23 +673,21 @@
   .obras-filtros { flex-wrap: wrap; }
 }
 
-/* Obras: desligar scroll interno em telas pequenas — deixa a seção fluir */
 @media (max-width: 767px) {
-  .obras-scroll {
-    max-height: none;
-    overflow: visible;
-    mask-image: none;
-    padding-right: 0;
-  }
-  .obras-grid { grid-template-columns: 1fr; }
+  .obras-grid { grid-template-columns: repeat(2, 1fr); }
+  .obras-grid > [data-span="full"] { grid-column: span 2; }
 }
 
-/* Hero: CTAs empilham full-width e métricas somem em telas estreitas */
+/* Hero: CTAs empilham full-width e métricas compactam em telas estreitas */
 .hero-ctas > a { flex: 1 1 auto; }
 @media (max-width: 640px) {
   .hero-ctas { flex-direction: column; align-items: stretch; }
-  .hero-ctas > a { width: 100%; }
-  .hero-metricas { display: none !important; }
+  .hero-ctas > a { width: 100%; height: 44px !important; }
+  .hero-metricas {
+    font-size: 11px !important;
+    gap: 6px 10px !important;
+  }
+  .hero-metricas [aria-hidden="true"] { display: none; }
 }
 
 /* Slider do hero: foco visível sem colidir com o handle */
