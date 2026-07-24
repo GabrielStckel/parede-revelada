@@ -431,7 +431,7 @@
 @media (min-width: 1280px) {
   .obras-grid { grid-template-columns: repeat(4, 1fr); }
 }
-.obras-grid > [data-span="full"] { grid-column: span 2; }
+.obras-grid > [data-span="full"] { grid-column: auto; }
 
 .obra-item { display: flex; flex-direction: column; }
 .obra-cta {
@@ -446,7 +446,7 @@
 }
 .obra-media {
   display: block;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 3 / 2;
   overflow: hidden;
   border: 1px solid var(--color-hairline);
   background: var(--color-concreto);
