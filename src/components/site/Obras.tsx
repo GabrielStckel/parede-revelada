@@ -168,22 +168,48 @@ export function Obras() {
           </div>
 
 
-          <div className="obras-scroll">
+          <div className="obras-carousel">
             <motion.ul
-              className="obras-grid"
+              ref={trackRef}
+              className="obras-track"
               layout={!reduce}
               aria-live="polite"
+              onAnimationComplete={updateNav}
             >
               <AnimatePresence mode="popLayout" initial={false}>
                 {filtered.map((obra) => (
                   <motion.li
                     key={obra.id}
                     layout={!reduce}
-                    data-span={obra.span}
                     className="obra-item"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
+                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <button
+                      type="button"
+                      className="obra-cta"
+                      aria-label={`Ver obra ${obra.titulo} em detalhe`}
+                      onClick={(e) => open(obra, e.currentTarget)}
+                    >
+                      <span className="obra-media">
+                        <img
+                          src={obra.thumb}
+                          alt={obra.alt}
+                          width={400}
+                          height={300}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </span>
+                    </button>
+                    <FichaTecnica obra={obra} />
+                  </motion.li>
+                ))}
+              </AnimatePresence>
+            </motion.ul>
+          </div>
                     transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                   >
                     <button
