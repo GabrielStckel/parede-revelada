@@ -11,6 +11,7 @@
   --color-massa: #212126;
   --color-cal: #F2EFEA;
   --color-grafite: #8B8B93;
+  --color-grafite-strong: #B4B4BA;
   --color-laranja: #F57C1F;
   --color-brasa: #C25A0C;
   --color-hairline: color-mix(in oklab, var(--color-cal) 8%, transparent);
