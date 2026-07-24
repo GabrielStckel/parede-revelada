@@ -1,5 +1,5 @@
 // TODO: texto real da empresa
-import equipeImg from "@/assets/equipe-stckel.jpg";
+import equipeImg from "@/assets/equipe-stckel-1400.webp";
 import { Logo } from "./Logo";
 
 export function SobreStckel() {
@@ -15,8 +15,8 @@ export function SobreStckel() {
           <img
             src={equipeImg}
             alt="Equipe Stckel Pinturas em obra"
-            width={1600}
-            height={1200}
+            width={1400}
+            height={1050}
             loading="lazy"
             decoding="async"
           />

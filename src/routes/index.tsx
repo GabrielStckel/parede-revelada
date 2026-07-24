@@ -8,10 +8,11 @@ import { Obras } from "@/components/site/Obras";
 import { SobreStckel } from "@/components/site/SobreStckel";
 import { Contato, WhatsAppFab } from "@/components/site/Contato";
 import { Toaster } from "@/components/ui/sonner";
-import heroDepoisUrl from "@/assets/hero-depois.jpg";
+import heroDepois1600 from "@/assets/hero-depois-1600.webp";
+import heroDepois800 from "@/assets/hero-depois-800.webp";
 
 const SITE_URL = "https://stckelpinturas.com.br";
-const OG_IMAGE = `${SITE_URL}${heroDepoisUrl}`;
+const OG_IMAGE = `${SITE_URL}${heroDepois1600}`;
 
 const TITLE =
   "Stckel Pinturas em Curitiba — Fachada, textura grafiato e revestimentos";
@@ -67,7 +68,9 @@ export const Route = createFileRoute("/")({
       {
         rel: "preload",
         as: "image",
-        href: heroDepoisUrl,
+        href: heroDepois1600,
+        imagesrcset: `${heroDepois800} 800w, ${heroDepois1600} 1600w`,
+        imagesizes: "100vw",
         fetchpriority: "high",
       },
     ],

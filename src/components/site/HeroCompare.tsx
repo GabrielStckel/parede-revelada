@@ -1,9 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import antesSrc from "@/assets/hero-antes.jpg";
-import depoisSrc from "@/assets/hero-depois.jpg";
+import antes800 from "@/assets/hero-antes-800.webp";
+import antes1600 from "@/assets/hero-antes-1600.webp";
+import depois800 from "@/assets/hero-depois-800.webp";
+import depois1600 from "@/assets/hero-depois-1600.webp";
 
-const IMG_W = 1792;
-const IMG_H = 1024;
+const IMG_W = 1600;
+const IMG_H = 900;
+const HERO_SIZES = "100vw";
+const ANTES_SRCSET = `${antes800} 800w, ${antes1600} 1600w`;
+const DEPOIS_SRCSET = `${depois800} 800w, ${depois1600} 1600w`;
 
 export function HeroCompare() {
   const [pos, setPos] = useState(50);
@@ -157,13 +162,16 @@ export function HeroCompare() {
       <div ref={stageRef} className="absolute inset-0 select-none">
         {/* Before (bottom) */}
         <img
-          src={antesSrc}
+          src={antes1600}
+          srcSet={ANTES_SRCSET}
+          sizes={HERO_SIZES}
           alt="Fachada antes: reboco manchado, tinta descascando."
           width={IMG_W}
           height={IMG_H}
           draggable={false}
-          loading="eager"
+          loading="lazy"
           decoding="async"
+          fetchPriority="low"
           className="absolute inset-0 h-full w-full object-cover"
           style={{ userSelect: "none" }}
         />
@@ -174,7 +182,9 @@ export function HeroCompare() {
           style={{ clipPath: clip, WebkitClipPath: clip }}
         >
           <img
-            src={depoisSrc}
+            src={depois1600}
+            srcSet={DEPOIS_SRCSET}
+            sizes={HERO_SIZES}
             alt=""
             width={IMG_W}
             height={IMG_H}
