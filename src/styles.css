@@ -673,23 +673,21 @@
   .obras-filtros { flex-wrap: wrap; }
 }
 
-/* Obras: desligar scroll interno em telas pequenas — deixa a seção fluir */
 @media (max-width: 767px) {
-  .obras-scroll {
-    max-height: none;
-    overflow: visible;
-    mask-image: none;
-    padding-right: 0;
-  }
-  .obras-grid { grid-template-columns: 1fr; }
+  .obras-grid { grid-template-columns: repeat(2, 1fr); }
+  .obras-grid > [data-span="full"] { grid-column: span 2; }
 }
 
-/* Hero: CTAs empilham full-width e métricas somem em telas estreitas */
+/* Hero: CTAs empilham full-width e métricas compactam em telas estreitas */
 .hero-ctas > a { flex: 1 1 auto; }
 @media (max-width: 640px) {
   .hero-ctas { flex-direction: column; align-items: stretch; }
-  .hero-ctas > a { width: 100%; }
-  .hero-metricas { display: none !important; }
+  .hero-ctas > a { width: 100%; height: 44px !important; }
+  .hero-metricas {
+    font-size: 11px !important;
+    gap: 6px 10px !important;
+  }
+  .hero-metricas [aria-hidden="true"] { display: none; }
 }
 
 /* Slider do hero: foco visível sem colidir com o handle */
