@@ -6,8 +6,8 @@ type LogoProps = {
 };
 
 export function Logo({ className, height = 22 }: LogoProps) {
-  // proporção da imagem: 1695 x 514 ≈ 3.297
-  const width = Math.round(height * (1695 / 514));
+  // proporção da imagem: 1589 x 480 ≈ 3.31
+  const width = Math.round(height * (1589 / 480));
   return (
     <img
       src={logoAsset.url}
