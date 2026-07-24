@@ -125,24 +125,48 @@ export function Obras() {
             role="group"
             aria-label="Filtrar obras"
             className="obras-filtros"
+            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}
           >
-            {FILTROS.map((f) => {
-              const active = cat === f.key;
-              return (
-                <button
-                  key={f.key}
-                  type="button"
-                  aria-pressed={active}
-                  onClick={() => setCat(f.key)}
-                  className="obras-filtro"
-                  data-active={active}
-                >
-                  <span>{f.label}</span>
-                  <span className="obras-filtro-count">({counts[f.key]})</span>
-                </button>
-              );
-            })}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 20px" }}>
+              {FILTROS.map((f) => {
+                const active = cat === f.key;
+                return (
+                  <button
+                    key={f.key}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => { setCat(f.key); requestAnimationFrame(() => { trackRef.current?.scrollTo({ left: 0 }); updateNav(); }); }}
+                    className="obras-filtro"
+                    data-active={active}
+                  >
+                    <span>{f.label}</span>
+                    <span className="obras-filtro-count">({counts[f.key]})</span>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="obras-nav" aria-label="Navegar obras">
+              <button
+                type="button"
+                className="obras-nav-btn"
+                onClick={() => scrollByDir(-1)}
+                disabled={!canPrev}
+                aria-label="Obra anterior"
+              >
+                <ChevronLeft size={20} strokeWidth={1.5} />
+              </button>
+              <button
+                type="button"
+                className="obras-nav-btn"
+                onClick={() => scrollByDir(1)}
+                disabled={!canNext}
+                aria-label="Próxima obra"
+              >
+                <ChevronRight size={20} strokeWidth={1.5} />
+              </button>
+            </div>
           </div>
+
 
           <div className="obras-scroll">
             <motion.ul
