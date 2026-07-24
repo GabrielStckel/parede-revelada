@@ -206,7 +206,9 @@ export function Nav() {
               </a>
             ))}
             <a
-              href="#contato"
+              href={buildWhatsAppLink()}
+              target="_blank"
+              rel="noreferrer noopener"
               onClick={() => setOpen(false)}
               className="stckel-menu-item mt-6 inline-flex h-12 items-center justify-center px-5 text-[13px] uppercase tracking-[0.08em] text-[color:var(--color-breu)]"
               style={{
