@@ -119,7 +119,8 @@ export function HeroCompare() {
       aria-label="Fachada antes e depois"
       className="relative w-screen overflow-hidden"
       style={{
-        height: "92vh",
+        height: "min(88svh, 760px)",
+        minHeight: "560px",
         marginLeft: "calc(50% - 50vw)",
         marginRight: "calc(50% - 50vw)",
         backgroundColor: "var(--color-breu)",
