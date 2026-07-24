@@ -324,37 +324,7 @@ export function HeroCompare() {
           </p>
 
 
-          <div
-            role="button"
-            tabIndex={0}
-            aria-label="Arraste para comparar antes e depois"
-            onPointerDown={onPointerDown}
-            onPointerMove={onPointerMove}
-            onPointerUp={onPointerUp}
-            onPointerCancel={onPointerUp}
-            onKeyDown={onKeyDown}
-            className="pointer-events-auto inline-flex items-center gap-3 select-none"
-            style={{
-              height: "56px",
-              padding: "0 20px",
-              backgroundColor: "var(--color-laranja)",
-              color: "var(--color-breu)",
-              fontFamily: "var(--font-mono)",
-              fontWeight: 500,
-              fontSize: "12px",
-              letterSpacing: "0.16em",
-              textTransform: "uppercase",
-              cursor: "ew-resize",
-              touchAction: "none",
-              boxShadow:
-                "0 8px 24px color-mix(in oklab, var(--color-breu) 70%, transparent)",
-            }}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M10 5l-6 7 6 7M14 5l6 7-6 7" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <span>Arraste · Antes / Depois</span>
-          </div>
+
 
 
           <ul
