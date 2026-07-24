@@ -1,20 +1,10 @@
-import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { servicos } from "@/data/servicos";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { ThumbFollower, type ThumbFollowerHandle } from "./ThumbFollower";
 
 export function Servicos() {
   const [openId, setOpenId] = useState<string | null>(null);
-  const [hoverId, setHoverId] = useState<string | null>(null);
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const listRef = useRef<HTMLUListElement | null>(null);
-  const thumbRef = useRef<ThumbFollowerHandle | null>(null);
-  const isMobile = useIsMobile();
-  const mountedRef = useRef(false);
-
-  useEffect(() => {
-    mountedRef.current = true;
-  }, []);
 
   // Section reveal
   useEffect(() => {
@@ -47,32 +37,6 @@ export function Servicos() {
     io.observe(el);
     return () => io.disconnect();
   }, []);
-
-  const onPointerMove = (e: PointerEvent<HTMLUListElement>) => {
-    if (!mountedRef.current || isMobile) return;
-    if (e.pointerType !== "mouse") return;
-    const target = e.target as HTMLElement | null;
-    const li = target?.closest("[data-servico-id]") as HTMLElement | null;
-    if (!li) {
-      thumbRef.current?.hide();
-      if (hoverId !== null) setHoverId(null);
-      return;
-    }
-    const id = li.getAttribute("data-servico-id");
-    if (!id) return;
-    if (openId === id) {
-      thumbRef.current?.hide();
-      if (hoverId !== null) setHoverId(null);
-      return;
-    }
-    thumbRef.current?.setTarget(e.clientX, e.clientY);
-    if (hoverId !== id) setHoverId(id);
-  };
-
-  const onPointerLeave = () => {
-    thumbRef.current?.hide();
-    if (hoverId !== null) setHoverId(null);
-  };
 
   const onKeyDown = (e: KeyboardEvent<HTMLUListElement>) => {
     const key = e.key;
@@ -124,14 +88,13 @@ export function Servicos() {
           ref={listRef}
           role="list"
           className="stckel-servicos-list"
-          onPointerMove={onPointerMove}
-          onPointerLeave={onPointerLeave}
           onKeyDown={onKeyDown}
           style={{ listStyle: "none", margin: 0, padding: 0 }}
         >
-          {servicos.map((s) => {
+          {servicos.map((s, i) => {
             const open = openId === s.id;
             const painelProps: { inert?: boolean } = open ? {} : { inert: true };
+            const numero = String(i + 1).padStart(2, "0");
             return (
               <li
                 key={s.id}
@@ -148,8 +111,22 @@ export function Servicos() {
                     onClick={() => setOpenId(open ? null : s.id)}
                     className="linha-inner"
                   >
-                    <span className="nome">{s.nome}</span>
-                    <span className="aplicacao">{s.aplicacao}</span>
+                    <span className="linha-num" aria-hidden="true">{numero}</span>
+                    <span className="linha-txt">
+                      <span className="nome">{s.nome}</span>
+                      <span className="aplicacao">{s.aplicacao}</span>
+                    </span>
+                    <span className="linha-toggle" aria-hidden="true">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                        <path
+                          d="M6 9l6 6 6-6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </span>
                   </button>
                 </h3>
                 <div
@@ -175,7 +152,6 @@ export function Servicos() {
           })}
         </ul>
       </div>
-      <ThumbFollower ref={thumbRef} items={servicos} activeId={hoverId} />
     </section>
   );
 }
