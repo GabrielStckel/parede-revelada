@@ -115,7 +115,7 @@ export function Contato() {
       style={{ backgroundColor: "var(--color-concreto)" }}
     >
       <div className="container-stckel">
-        <header className="mb-14">
+        <header className="mb-10 md:mb-14 max-w-2xl">
           <span style={labelStyle}>Contato</span>
           <h2
             id="titulo-contato"
@@ -123,99 +123,133 @@ export function Contato() {
             style={{
               fontFamily: "var(--font-display)",
               fontSize: "var(--text-h2)",
-              lineHeight: 1,
+              lineHeight: 1.05,
               letterSpacing: "-0.02em",
-              maxWidth: "20ch",
             }}
           >
             Vamos falar da sua obra
           </h2>
+          <p
+            className="mt-4 text-[color:var(--color-grafite-strong)]"
+            style={{ fontFamily: "var(--font-sans)", fontSize: "var(--text-small)", lineHeight: 1.55 }}
+          >
+            Conte o que precisa. Respondemos com um plano claro de execução, prazo e valor.
+          </p>
         </header>
 
-        <div className="grid grid-cols-1 gap-16 md:grid-cols-12 md:gap-12">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-12 lg:gap-10">
           {/* Canais */}
-          <ul className="md:col-span-5 flex flex-col gap-8">
-            {CANAIS.map((c) => (
-              <li key={c.rotulo} className="flex flex-col gap-2">
-                <span style={labelStyle}>{c.rotulo}</span>
-                {c.href ? (
-                  <a
-                    href={c.href}
-                    target={c.href.startsWith("http") ? "_blank" : undefined}
-                    rel={c.href.startsWith("http") ? "noreferrer noopener" : undefined}
-                    className="text-[color:var(--color-cal)] transition-colors hover:text-[color:var(--color-laranja)]"
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      fontSize: "clamp(1.25rem, 0.9rem + 1.2vw, 1.75rem)",
-                      lineHeight: 1.1,
-                      letterSpacing: "-0.01em",
-                    }}
+          <aside className="md:col-span-5 lg:col-span-4">
+            <div
+              className="flex flex-col"
+              style={{
+                border: "1px solid var(--color-hairline)",
+                backgroundColor: "color-mix(in oklab, var(--color-breu) 25%, transparent)",
+              }}
+            >
+              {CANAIS.map((c, i) => {
+                const isLink = !!c.href;
+                const content = (
+                  <div
+                    className="flex items-start justify-between gap-4 p-5"
+                    style={i > 0 ? { borderTop: "1px solid var(--color-hairline)" } : undefined}
                   >
-                    {c.valor}
-                  </a>
-                ) : (
-                  <span
-                    className="text-[color:var(--color-cal)]"
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      fontSize: "clamp(1.25rem, 0.9rem + 1.2vw, 1.75rem)",
-                      lineHeight: 1.1,
-                      letterSpacing: "-0.01em",
-                    }}
-                  >
-                    {c.valor}
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
+                    <div className="flex flex-col gap-1 min-w-0">
+                      <span style={labelStyle}>{c.rotulo}</span>
+                      <span
+                        className="text-[color:var(--color-cal)] truncate"
+                        style={{ fontFamily: "var(--font-sans)", fontSize: "15px", fontWeight: 500 }}
+                      >
+                        {c.valor}
+                      </span>
+                    </div>
+                    {isLink && (
+                      <span
+                        aria-hidden="true"
+                        className="mt-1 text-[color:var(--color-laranja)]"
+                        style={{ fontFamily: "var(--font-mono)", fontSize: "14px" }}
+                      >
+                        →
+                      </span>
+                    )}
+                  </div>
+                );
+                return (
+                  <div key={c.rotulo}>
+                    {isLink ? (
+                      <a
+                        href={c.href}
+                        target={c.href!.startsWith("http") ? "_blank" : undefined}
+                        rel={c.href!.startsWith("http") ? "noreferrer noopener" : undefined}
+                        className="block transition-colors hover:bg-[color:var(--color-breu)]/40"
+                      >
+                        {content}
+                      </a>
+                    ) : (
+                      content
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </aside>
 
           {/* Formulário */}
-          <form onSubmit={onSubmit} noValidate className="md:col-span-7 flex flex-col gap-6">
-            <div className="flex flex-col gap-2">
-              <label htmlFor="campo-nome" style={labelStyle}>Nome</label>
-              <input
-                id="campo-nome"
-                name="nome"
-                type="text"
-                autoComplete="name"
-                maxLength={100}
-                value={valores.nome}
-                onChange={(e) => setCampo("nome", e.target.value)}
-                onBlur={() => onBlur("nome")}
-                aria-invalid={erros.nome ? "true" : undefined}
-                aria-describedby={erros.nome ? "erro-nome" : undefined}
-                style={inputStyle}
-              />
-              {erros.nome && (
-                <span id="erro-nome" style={{ ...labelStyle, color: "var(--color-laranja)" }}>
-                  {erros.nome}
-                </span>
-              )}
-            </div>
+          <form
+            onSubmit={onSubmit}
+            noValidate
+            className="md:col-span-7 lg:col-span-8 flex flex-col gap-5 p-6 md:p-8"
+            style={{
+              border: "1px solid var(--color-hairline)",
+              backgroundColor: "color-mix(in oklab, var(--color-breu) 25%, transparent)",
+            }}
+          >
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="campo-nome" style={labelStyle}>Nome</label>
+                <input
+                  id="campo-nome"
+                  name="nome"
+                  type="text"
+                  autoComplete="name"
+                  maxLength={100}
+                  value={valores.nome}
+                  onChange={(e) => setCampo("nome", e.target.value)}
+                  onBlur={() => onBlur("nome")}
+                  aria-invalid={erros.nome ? "true" : undefined}
+                  aria-describedby={erros.nome ? "erro-nome" : undefined}
+                  style={inputStyle}
+                />
+                {erros.nome && (
+                  <span id="erro-nome" style={{ ...labelStyle, color: "var(--color-laranja)" }}>
+                    {erros.nome}
+                  </span>
+                )}
+              </div>
 
-            <div className="flex flex-col gap-2">
-              <label htmlFor="campo-telefone" style={labelStyle}>Telefone</label>
-              <input
-                id="campo-telefone"
-                name="telefone"
-                type="tel"
-                inputMode="tel"
-                autoComplete="tel"
-                maxLength={20}
-                placeholder="(41) 99999-9999"
-                value={valores.telefone}
-                onChange={(e) => setCampo("telefone", e.target.value)}
-                onBlur={() => onBlur("telefone")}
-                aria-invalid={erros.telefone ? "true" : undefined}
-                aria-describedby={erros.telefone ? "erro-telefone" : undefined}
-                style={inputStyle}
-              />
-              {erros.telefone && (
-                <span id="erro-telefone" style={{ ...labelStyle, color: "var(--color-laranja)" }}>
-                  {erros.telefone}
-                </span>
-              )}
+              <div className="flex flex-col gap-2">
+                <label htmlFor="campo-telefone" style={labelStyle}>Telefone</label>
+                <input
+                  id="campo-telefone"
+                  name="telefone"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  maxLength={20}
+                  placeholder="(41) 99999-9999"
+                  value={valores.telefone}
+                  onChange={(e) => setCampo("telefone", e.target.value)}
+                  onBlur={() => onBlur("telefone")}
+                  aria-invalid={erros.telefone ? "true" : undefined}
+                  aria-describedby={erros.telefone ? "erro-telefone" : undefined}
+                  style={inputStyle}
+                />
+                {erros.telefone && (
+                  <span id="erro-telefone" style={{ ...labelStyle, color: "var(--color-laranja)" }}>
+                    {erros.telefone}
+                  </span>
+                )}
+              </div>
             </div>
 
             <div className="flex flex-col gap-2">
@@ -253,6 +287,7 @@ export function Contato() {
                 name="mensagem"
                 rows={5}
                 maxLength={1000}
+                placeholder="Endereço, metragem aproximada, prazo desejado…"
                 value={valores.mensagem}
                 onChange={(e) => setCampo("mensagem", e.target.value)}
                 onBlur={() => onBlur("mensagem")}
@@ -267,7 +302,13 @@ export function Contato() {
               )}
             </div>
 
-            <div>
+            <div className="flex flex-col-reverse gap-4 pt-2 md:flex-row md:items-center md:justify-between">
+              <p
+                className="text-[color:var(--color-grafite-strong)]"
+                style={{ fontFamily: "var(--font-mono)", fontSize: "11px", letterSpacing: "0.08em" }}
+              >
+                Enviamos direto para o nosso WhatsApp.
+              </p>
               <button
                 type="submit"
                 className="inline-flex items-center justify-center px-6 transition-colors"
