@@ -12,7 +12,7 @@ import heroDepois1600 from "@/assets/hero-depois-1600.webp";
 import heroDepois800 from "@/assets/hero-depois-800.webp";
 
 const SITE_URL = "https://stckelpinturas.com.br";
-const OG_IMAGE = `${SITE_URL}${heroDepoisUrl}`;
+const OG_IMAGE = `${SITE_URL}${heroDepois1600}`;
 
 const TITLE =
   "Stckel Pinturas em Curitiba — Fachada, textura grafiato e revestimentos";
