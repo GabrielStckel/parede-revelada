@@ -59,6 +59,7 @@ export function Obras() {
   return (
     <section
       id="obras"
+      aria-labelledby="titulo-obras"
       className="section-y"
       style={{ backgroundColor: "var(--color-breu)" }}
     >
@@ -78,6 +79,7 @@ export function Obras() {
               OBRAS ENTREGUES
             </p>
             <h2
+              id="titulo-obras"
               style={{
                 marginTop: 12,
                 color: "var(--color-cal)",

@@ -77,13 +77,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Stckel Pinturas — Curitiba/PR" },
-      {
-        name: "description",
-        content:
-          "Pintura, texturas e revestimentos em Curitiba e região metropolitana.",
-      },
       { name: "theme-color", content: "#0B0B0C" },
+      { property: "og:site_name", content: "Stckel Pinturas" },
+      { property: "og:type", content: "website" },
+      { property: "og:locale", content: "pt_BR" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -94,7 +91,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Figtree:wght@400;500;600&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Outfit:wght@500;600&family=Figtree:wght@400;500;600&display=swap",
       },
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },

@@ -5,7 +5,8 @@ import { Logo } from "./Logo";
 export function SobreStckel() {
   return (
     <section
-      id="sobre"
+      id="a-stckel"
+      aria-labelledby="titulo-sobre"
       className="section-y"
       style={{ backgroundColor: "var(--color-breu)" }}
     >
@@ -17,6 +18,7 @@ export function SobreStckel() {
             width={1600}
             height={1200}
             loading="lazy"
+            decoding="async"
           />
           <span className="sobre-foto-tint" aria-hidden="true" />
         </figure>
@@ -27,7 +29,7 @@ export function SobreStckel() {
               fontFamily: "var(--font-mono)",
               fontSize: 12,
               letterSpacing: "0.16em",
-              color: "var(--color-grafite)",
+              color: "var(--color-grafite-strong)",
               textTransform: "uppercase",
               margin: 0,
               marginBottom: 16,
@@ -36,6 +38,7 @@ export function SobreStckel() {
             A STCKEL
           </p>
           <h2
+            id="titulo-sobre"
             style={{
               color: "var(--color-cal)",
               maxWidth: "16ch",
@@ -48,20 +51,16 @@ export function SobreStckel() {
 
           <div className="sobre-paragrafos">
             <p>
-              A Stckel Pinturas nasceu em Curitiba do trabalho de campo — obra,
-              andaime e prazo. Duas décadas depois, seguimos aplicando o mesmo
-              princípio: o acabamento é decidido no preparo, não na demão final.
+              Pintor em Curitiba desde 2000, a Stckel nasceu do trabalho de
+              campo — obra, andaime e prazo. Duas décadas depois, seguimos
+              aplicando o mesmo princípio: o acabamento é decidido no preparo,
+              não na demão final.
             </p>
             <p>
               Atendemos residências, condomínios e obras comerciais na região
               metropolitana com equipe própria, registrada e treinada em cada
               sistema que aplicamos. Sem terceirizar responsabilidade, sem
               improviso de material.
-            </p>
-            <p>
-              O que entregamos é o que assinamos: fachada limpa, ambiente
-              protegido e prazo cumprido. É por isso que a maior parte das obras
-              chega até nós por indicação de quem já foi cliente.
             </p>
           </div>
 

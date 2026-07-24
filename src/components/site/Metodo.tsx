@@ -38,6 +38,7 @@ export function Metodo() {
   return (
     <section
       id="metodo"
+      aria-labelledby="titulo-metodo"
       className="section-y"
       style={{ backgroundColor: "var(--color-massa)" }}
     >
@@ -48,7 +49,7 @@ export function Metodo() {
               fontFamily: "var(--font-mono)",
               fontSize: 12,
               letterSpacing: "0.16em",
-              color: "var(--color-grafite)",
+              color: "var(--color-laranja)",
               textTransform: "uppercase",
               margin: 0,
               marginBottom: 16,
@@ -56,7 +57,7 @@ export function Metodo() {
           >
             COMO TRABALHAMOS
           </p>
-          <h2 style={{ color: "var(--color-cal)", maxWidth: "20ch", margin: 0 }}>
+          <h2 id="titulo-metodo" style={{ color: "var(--color-cal)", maxWidth: "20ch", margin: 0 }}>
             ORDEM QUE APARECE NO ACABAMENTO
           </h2>
         </header>
