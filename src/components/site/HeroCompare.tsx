@@ -162,13 +162,16 @@ export function HeroCompare() {
       <div ref={stageRef} className="absolute inset-0 select-none">
         {/* Before (bottom) */}
         <img
-          src={antesSrc}
+          src={antes1600}
+          srcSet={ANTES_SRCSET}
+          sizes={HERO_SIZES}
           alt="Fachada antes: reboco manchado, tinta descascando."
           width={IMG_W}
           height={IMG_H}
           draggable={false}
-          loading="eager"
+          loading="lazy"
           decoding="async"
+          fetchPriority="low"
           className="absolute inset-0 h-full w-full object-cover"
           style={{ userSelect: "none" }}
         />
@@ -179,7 +182,9 @@ export function HeroCompare() {
           style={{ clipPath: clip, WebkitClipPath: clip }}
         >
           <img
-            src={depoisSrc}
+            src={depois1600}
+            srcSet={DEPOIS_SRCSET}
+            sizes={HERO_SIZES}
             alt=""
             width={IMG_W}
             height={IMG_H}
