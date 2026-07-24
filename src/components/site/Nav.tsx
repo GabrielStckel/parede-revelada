@@ -5,7 +5,7 @@ import { lock, unlock } from "@/lib/scroll-lock";
 const LINKS = [
   { href: "#servicos", label: "Serviços", id: "servicos" },
   { href: "#obras", label: "Obras", id: "obras" },
-  { href: "#a-stckel", label: "A Stckel", id: "a-stckel" },
+  { href: "#sobre", label: "A Stckel", id: "sobre" },
   { href: "#contato", label: "Contato", id: "contato" },
 ];
 
