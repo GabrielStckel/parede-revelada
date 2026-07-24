@@ -210,31 +210,6 @@ export function Obras() {
               </AnimatePresence>
             </motion.ul>
           </div>
-                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    <button
-                      type="button"
-                      className="obra-cta"
-                      aria-label={`Ver obra ${obra.titulo} em detalhe`}
-                      onClick={(e) => open(obra, e.currentTarget)}
-                    >
-                      <span className="obra-media">
-                        <img
-                          src={obra.thumb}
-                          alt={obra.alt}
-                          width={400}
-                          height={300}
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </span>
-                    </button>
-                    <FichaTecnica obra={obra} />
-                  </motion.li>
-                ))}
-              </AnimatePresence>
-            </motion.ul>
-          </div>
         </div>
       </SectionReveal>
 
