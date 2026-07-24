@@ -713,7 +713,7 @@
 .stckel-fab {
   bottom: calc(clamp(16px, 3vw, 28px) + env(safe-area-inset-bottom, 0px));
 }
-#contato:focus-within ~ .stckel-fab { opacity: 0; pointer-events: none; }
+body:has(#contato :focus) .stckel-fab { opacity: 0; pointer-events: none; }
 @media (prefers-reduced-motion: no-preference) {
   .stckel-fab { transition: background-color 200ms ease, opacity 200ms ease; }
 }
