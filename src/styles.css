@@ -188,6 +188,14 @@
   transform: translateY(0);
 }
 
+/* Mobile nav bar — sempre semi-opaca para legibilidade sobre o hero */
+.nav-mobile-bar {
+  background-color: color-mix(in oklab, var(--color-breu) 82%, transparent);
+  backdrop-filter: blur(10px) saturate(140%);
+  border-bottom: 1px solid var(--color-hairline);
+  padding-top: env(safe-area-inset-top);
+}
+
 /* Mobile menu stagger */
 @keyframes stckel-menu-in {
   from { opacity: 0; transform: translateY(12px); }
