@@ -1,9 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import antesSrc from "@/assets/hero-antes.jpg";
-import depoisSrc from "@/assets/hero-depois.jpg";
+import antes800 from "@/assets/hero-antes-800.webp";
+import antes1600 from "@/assets/hero-antes-1600.webp";
+import depois800 from "@/assets/hero-depois-800.webp";
+import depois1600 from "@/assets/hero-depois-1600.webp";
 
-const IMG_W = 1792;
-const IMG_H = 1024;
+const IMG_W = 1600;
+const IMG_H = 900;
+const HERO_SIZES = "100vw";
+const ANTES_SRCSET = `${antes800} 800w, ${antes1600} 1600w`;
+const DEPOIS_SRCSET = `${depois800} 800w, ${depois1600} 1600w`;
 
 export function HeroCompare() {
   const [pos, setPos] = useState(50);
