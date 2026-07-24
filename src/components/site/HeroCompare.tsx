@@ -164,8 +164,9 @@ export function HeroCompare() {
         {/* Label chips */}
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute left-4 top-4 md:left-6 md:top-6"
+          className="pointer-events-none absolute left-4 md:left-6"
           style={{
+            top: "calc(64px + env(safe-area-inset-top, 0px) + 12px)",
             fontFamily: "var(--font-mono)",
             fontWeight: 500,
             fontSize: "11px",
@@ -178,12 +179,12 @@ export function HeroCompare() {
           }}
         >
           Antes
-
         </span>
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute right-4 top-4 md:right-6 md:top-6"
+          className="pointer-events-none absolute right-4 md:right-6"
           style={{
+            top: "calc(64px + env(safe-area-inset-top, 0px) + 12px)",
             fontFamily: "var(--font-mono)",
             fontWeight: 500,
             fontSize: "11px",
