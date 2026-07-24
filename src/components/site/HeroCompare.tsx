@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import antesSrc from "@/assets/hero-antes.jpg";
 import depoisSrc from "@/assets/hero-depois.jpg";
-import { buildWhatsAppLink } from "@/lib/whatsapp";
 
 const IMG_W = 1792;
 const IMG_H = 1024;
