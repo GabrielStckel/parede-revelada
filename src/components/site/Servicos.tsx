@@ -96,6 +96,7 @@ export function Servicos() {
   return (
     <section
       id="servicos"
+      aria-labelledby="titulo-servicos"
       className="section-y"
       style={{ backgroundColor: "var(--color-concreto)", position: "relative" }}
     >
@@ -106,15 +107,15 @@ export function Servicos() {
               fontFamily: "var(--font-mono)",
               fontSize: 12,
               letterSpacing: "0.16em",
-              color: "var(--color-grafite)",
+              color: "var(--color-grafite-strong)",
               textTransform: "uppercase",
               margin: 0,
               marginBottom: 16,
             }}
           >
-            SISTEMAS APLICADOS
+            Pintura, textura grafiato e revestimentos · Curitiba/PR
           </p>
-          <h2 style={{ color: "var(--color-cal)", maxWidth: "18ch", margin: 0 }}>
+          <h2 id="titulo-servicos" style={{ color: "var(--color-cal)", maxWidth: "18ch", margin: 0 }}>
             O ACABAMENTO COMEÇA ANTES DA TINTA
           </h2>
         </header>
