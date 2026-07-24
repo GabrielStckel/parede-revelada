@@ -111,45 +111,47 @@ export function Obras() {
             })}
           </div>
 
-          <motion.ul
-            className="obras-grid"
-            layout={!reduce}
-            aria-live="polite"
-          >
-            <AnimatePresence mode="popLayout" initial={false}>
-              {filtered.map((obra) => (
-                <motion.li
-                  key={obra.id}
-                  layout={!reduce}
-                  data-span={obra.span}
-                  className="obra-item"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <button
-                    type="button"
-                    className="obra-cta"
-                    aria-label={`Ver obra ${obra.titulo} em detalhe`}
-                    onClick={(e) => open(obra, e.currentTarget)}
+          <div className="obras-scroll">
+            <motion.ul
+              className="obras-grid"
+              layout={!reduce}
+              aria-live="polite"
+            >
+              <AnimatePresence mode="popLayout" initial={false}>
+                {filtered.map((obra) => (
+                  <motion.li
+                    key={obra.id}
+                    layout={!reduce}
+                    data-span={obra.span}
+                    className="obra-item"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                   >
-                    <span className="obra-media">
-                      <img
-                        src={obra.thumb}
-                        alt={obra.alt}
-                        width={obra.span === "full" ? 1200 : 800}
-                        height={obra.span === "full" ? 675 : 600}
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </span>
-                  </button>
-                  <FichaTecnica obra={obra} />
-                </motion.li>
-              ))}
-            </AnimatePresence>
-          </motion.ul>
+                    <button
+                      type="button"
+                      className="obra-cta"
+                      aria-label={`Ver obra ${obra.titulo} em detalhe`}
+                      onClick={(e) => open(obra, e.currentTarget)}
+                    >
+                      <span className="obra-media">
+                        <img
+                          src={obra.thumb}
+                          alt={obra.alt}
+                          width={400}
+                          height={300}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </span>
+                    </button>
+                    <FichaTecnica obra={obra} />
+                  </motion.li>
+                ))}
+              </AnimatePresence>
+            </motion.ul>
+          </div>
         </div>
       </SectionReveal>
 
