@@ -374,13 +374,13 @@ export function HeroCompare() {
               {/* track */}
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 h-[3px] rounded-full"
+                className="pointer-events-none absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full"
                 style={{ backgroundColor: "var(--color-hairline)" }}
               />
               {/* fill */}
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute left-0 h-[3px] rounded-full"
+                className="pointer-events-none absolute left-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full"
                 style={{ width: `${pos}%`, backgroundColor: "var(--color-laranja)" }}
               />
               {/* handle */}
