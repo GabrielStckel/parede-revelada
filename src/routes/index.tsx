@@ -6,6 +6,8 @@ import { Servicos } from "@/components/site/Servicos";
 import { Metodo } from "@/components/site/Metodo";
 import { Obras } from "@/components/site/Obras";
 import { SobreStckel } from "@/components/site/SobreStckel";
+import { Contato, WhatsAppFab } from "@/components/site/Contato";
+import { Toaster } from "@/components/ui/sonner";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -39,8 +41,11 @@ function Index() {
         <Metodo />
         <Obras />
         <SobreStckel />
+        <Contato />
       </main>
       <Footer />
+      <WhatsAppFab />
+      <Toaster />
     </>
   );
 }
