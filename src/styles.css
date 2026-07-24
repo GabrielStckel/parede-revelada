@@ -247,7 +247,7 @@
   .stckel-menu-item { animation: none; opacity: 1; }
 }
 
-/* Section reveal — clip-path wipe, removido no transitionend */
+/* Section reveal — clip-path wipe (com fallback pra nunca ficar invisível) */
 .section-reveal { clip-path: inset(0 0 100% 0); }
 .section-reveal[data-revealing="true"] {
   clip-path: inset(0 0 0 0);
@@ -257,6 +257,12 @@
 @media (prefers-reduced-motion: reduce) {
   .section-reveal { clip-path: none; transition: none; }
 }
+/* Fallback: se JS não rodou (SSR, erro, etc.), mostra depois de 1.2s */
+@keyframes stckel-reveal-fallback { to { clip-path: none; } }
+.section-reveal:not([data-revealing]):not([data-revealed]) {
+  animation: stckel-reveal-fallback 0s linear 1.2s forwards;
+}
+
 
 /* Serviços — lista-acordeão editorial */
 .stckel-servicos-list .linha {
