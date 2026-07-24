@@ -135,6 +135,8 @@ export function HeroCompare() {
           width={IMG_W}
           height={IMG_H}
           draggable={false}
+          loading="eager"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
           style={{ userSelect: "none" }}
         />
@@ -150,6 +152,9 @@ export function HeroCompare() {
             width={IMG_W}
             height={IMG_H}
             draggable={false}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
             className="absolute inset-0 h-full w-full object-cover"
             style={{ userSelect: "none" }}
           />
@@ -305,7 +310,7 @@ export function HeroCompare() {
             certo. É por isso que o acabamento dura.
           </p>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="hero-ctas flex flex-wrap items-center gap-3">
             <a
               href="#obras"
               className="pointer-events-auto inline-flex items-center justify-center px-6 transition-colors"
@@ -352,7 +357,7 @@ export function HeroCompare() {
           </div>
 
           <ul
-            className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2"
+            className="hero-metricas mt-8 flex flex-wrap items-center gap-x-3 gap-y-2"
             style={{
               fontFamily: "var(--font-mono)",
               fontWeight: 500,

@@ -104,12 +104,13 @@ export function Contato() {
     fontWeight: 500,
     letterSpacing: "0.12em",
     textTransform: "uppercase",
-    color: "var(--color-grafite)",
+    color: "var(--color-grafite-strong)",
   };
 
   return (
     <section
       id="contato"
+      aria-labelledby="titulo-contato"
       className="section-y"
       style={{ backgroundColor: "var(--color-concreto)" }}
     >
@@ -117,6 +118,7 @@ export function Contato() {
         <header className="mb-14">
           <span style={labelStyle}>Contato</span>
           <h2
+            id="titulo-contato"
             className="mt-3 text-[color:var(--color-cal)]"
             style={{
               fontFamily: "var(--font-display)",
@@ -299,16 +301,16 @@ export function WhatsAppFab() {
       target="_blank"
       rel="noreferrer noopener"
       aria-label="Falar com a Stckel no WhatsApp"
-      className="fixed z-30 inline-flex items-center justify-center transition-colors"
+      className="stckel-fab fixed z-30 inline-flex items-center justify-center transition-colors"
       style={{
         right: "clamp(16px, 3vw, 28px)",
-        bottom: "clamp(16px, 3vw, 28px)",
         width: "56px",
         height: "56px",
         backgroundColor: "var(--color-laranja)",
         color: "var(--color-breu)",
         borderRadius: "9999px",
-        boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+        boxShadow:
+          "0 10px 30px color-mix(in oklab, var(--color-breu) 45%, transparent)",
       }}
       onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-brasa)")}
       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--color-laranja)")}
