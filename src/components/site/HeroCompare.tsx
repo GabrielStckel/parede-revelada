@@ -12,11 +12,20 @@ const DEPOIS_SRCSET = `${depois800} 800w, ${depois1600} 1600w`;
 
 export function HeroCompare() {
   const [pos, setPos] = useState(50);
+  const [heroReady, setHeroReady] = useState(false);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const draggingRef = useRef(false);
   const introRafRef = useRef<number | null>(null);
   const introDoneRef = useRef(false);
+  const loadedImagesRef = useRef({ antes: false, depois: false });
+
+  const markImageLoaded = useCallback((image: "antes" | "depois") => {
+    loadedImagesRef.current[image] = true;
+    if (loadedImagesRef.current.antes && loadedImagesRef.current.depois) {
+      setHeroReady(true);
+    }
+  }, []);
 
   const commitPos = useCallback((clientX: number) => {
     const stage = stageRef.current;
@@ -46,6 +55,7 @@ export function HeroCompare() {
 
   // One-shot intro 35 -> 65 -> 50
   useEffect(() => {
+    if (!heroReady) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) {
       setPos(50);
@@ -74,7 +84,7 @@ export function HeroCompare() {
     return () => {
       if (introRafRef.current !== null) cancelAnimationFrame(introRafRef.current);
     };
-  }, []);
+  }, [heroReady]);
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     cancelIntro();
@@ -169,9 +179,10 @@ export function HeroCompare() {
           width={IMG_W}
           height={IMG_H}
           draggable={false}
-          loading="lazy"
+          loading="eager"
           decoding="async"
-          fetchPriority="low"
+          fetchPriority="high"
+          onLoad={() => markImageLoaded("antes")}
           className="absolute inset-0 h-full w-full object-cover"
           style={{ userSelect: "none" }}
         />
@@ -192,6 +203,7 @@ export function HeroCompare() {
             loading="eager"
             decoding="async"
             fetchPriority="high"
+            onLoad={() => markImageLoaded("depois")}
             className="absolute inset-0 h-full w-full object-cover"
             style={{ userSelect: "none" }}
           />
@@ -200,8 +212,9 @@ export function HeroCompare() {
         {/* Label chips */}
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute left-4 md:left-6"
+          className="pointer-events-none absolute left-4 transition-opacity duration-300 md:left-6"
           style={{
+            opacity: heroReady ? 1 : 0,
             top: "calc(64px + env(safe-area-inset-top, 0px) + 12px)",
             fontFamily: "var(--font-mono)",
             fontWeight: 500,
@@ -218,8 +231,9 @@ export function HeroCompare() {
         </span>
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute right-4 md:right-6"
+          className="pointer-events-none absolute right-4 transition-opacity duration-300 md:right-6"
           style={{
+            opacity: heroReady ? 1 : 0,
             top: "calc(64px + env(safe-area-inset-top, 0px) + 12px)",
             fontFamily: "var(--font-mono)",
             fontWeight: 500,
@@ -239,6 +253,7 @@ export function HeroCompare() {
           aria-hidden="true"
           className="pointer-events-none absolute inset-y-0 z-10"
           style={{
+            opacity: heroReady ? 1 : 0,
             left: `${pos}%`,
             transform: "translateX(-50%)",
             width: "2px",
@@ -338,7 +353,10 @@ export function HeroCompare() {
           </ul>
 
           {/* Horizontal before/after control */}
-          <div className="pointer-events-auto mt-5 w-full max-w-md">
+          <div
+            className={`mt-5 w-full max-w-md transition-opacity duration-300 ${heroReady ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+            aria-hidden={!heroReady}
+          >
             <div
               className="flex items-center justify-between"
               style={{
@@ -357,7 +375,7 @@ export function HeroCompare() {
             <div
               ref={trackRef}
               role="slider"
-              tabIndex={0}
+              tabIndex={heroReady ? 0 : -1}
               aria-label="Comparar antes e depois"
               aria-valuemin={0}
               aria-valuemax={100}
