@@ -3,6 +3,7 @@ import { metodo } from "@/data/metodo";
 
 export function Metodo() {
   const sectionRef = useRef<HTMLDivElement | null>(null);
+  const timelineRef = useRef<HTMLOListElement | null>(null);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -33,6 +34,40 @@ export function Metodo() {
     );
     io.observe(el);
     return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const el = timelineRef.current;
+    if (!el) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      el.style.setProperty("--progress", "1");
+      return;
+    }
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      const start = vh * 0.75;
+      const end = vh * 0.25;
+      const total = rect.height + (start - end);
+      const traveled = start - rect.top;
+      const p = Math.max(0, Math.min(1, traveled / total));
+      el.style.setProperty("--progress", p.toFixed(4));
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   return (
