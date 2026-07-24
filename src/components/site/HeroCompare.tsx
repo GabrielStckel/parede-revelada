@@ -15,6 +15,8 @@ export function HeroCompare() {
   const [heroReady, setHeroReady] = useState(false);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
+  const beforeImageRef = useRef<HTMLImageElement | null>(null);
+  const afterImageRef = useRef<HTMLImageElement | null>(null);
   const draggingRef = useRef(false);
   const introRafRef = useRef<number | null>(null);
   const introDoneRef = useRef(false);
@@ -26,6 +28,11 @@ export function HeroCompare() {
       setHeroReady(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (beforeImageRef.current?.complete) markImageLoaded("antes");
+    if (afterImageRef.current?.complete) markImageLoaded("depois");
+  }, [markImageLoaded]);
 
   const commitPos = useCallback((clientX: number) => {
     const stage = stageRef.current;
@@ -172,6 +179,7 @@ export function HeroCompare() {
       <div ref={stageRef} className="absolute inset-0 select-none">
         {/* Before (bottom) */}
         <img
+          ref={beforeImageRef}
           src={antes1600}
           srcSet={ANTES_SRCSET}
           sizes={HERO_SIZES}
@@ -183,6 +191,7 @@ export function HeroCompare() {
           decoding="async"
           fetchPriority="high"
           onLoad={() => markImageLoaded("antes")}
+          onError={() => markImageLoaded("antes")}
           className="absolute inset-0 h-full w-full object-cover"
           style={{ userSelect: "none" }}
         />
@@ -193,6 +202,7 @@ export function HeroCompare() {
           style={{ clipPath: clip, WebkitClipPath: clip }}
         >
           <img
+            ref={afterImageRef}
             src={depois1600}
             srcSet={DEPOIS_SRCSET}
             sizes={HERO_SIZES}
@@ -204,6 +214,7 @@ export function HeroCompare() {
             decoding="async"
             fetchPriority="high"
             onLoad={() => markImageLoaded("depois")}
+            onError={() => markImageLoaded("depois")}
             className="absolute inset-0 h-full w-full object-cover"
             style={{ userSelect: "none" }}
           />
