@@ -703,20 +703,26 @@
 /* Slider do hero: foco visível sem colidir com o handle */
 [role="slider"]:focus-visible {
   outline: 2px solid var(--color-laranja);
-  outline-offset: 6px;
+  outline-offset: 4px;
 }
 
-/* Hero handle: maior no toque, com halo pulsante one-shot como affordance */
+/* Hero handle: controle horizontal na base, com halo pulsante one-shot */
 .hero-handle {
-  width: 56px;
-  height: 56px;
+  width: 40px;
+  height: 40px;
+  background-color: var(--color-cal);
+  border: 2px solid var(--color-laranja);
+  color: var(--color-breu);
+  box-shadow:
+    0 0 0 6px color-mix(in oklab, var(--color-breu) 35%, transparent),
+    0 8px 24px color-mix(in oklab, var(--color-breu) 70%, transparent);
 }
 @media (min-width: 768px) {
-  .hero-handle { width: 48px; height: 48px; }
+  .hero-handle { width: 36px; height: 36px; }
 }
 @keyframes hero-handle-hint {
-  0%, 100% { transform: scale(1); }
-  50%      { transform: scale(1.08); }
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50%      { transform: translate(-50%, -50%) scale(1.1); }
 }
 .hero-handle {
   animation: hero-handle-hint 2.2s ease-in-out 0.9s 3;

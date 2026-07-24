@@ -8,6 +8,7 @@ const IMG_H = 1024;
 export function HeroCompare() {
   const [pos, setPos] = useState(50);
   const stageRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
   const draggingRef = useRef(false);
   const introRafRef = useRef<number | null>(null);
   const introDoneRef = useRef(false);
@@ -16,6 +17,15 @@ export function HeroCompare() {
     const stage = stageRef.current;
     if (!stage) return;
     const rect = stage.getBoundingClientRect();
+    const raw = ((clientX - rect.left) / rect.width) * 100;
+    const clamped = Math.max(0, Math.min(100, raw));
+    setPos(clamped);
+  }, []);
+
+  const commitPosFromTrack = useCallback((clientX: number) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const rect = track.getBoundingClientRect();
     const raw = ((clientX - rect.left) / rect.width) * 100;
     const clamped = Math.max(0, Math.min(100, raw));
     setPos(clamped);
@@ -41,7 +51,6 @@ export function HeroCompare() {
     const to = 65;
     const duration = 900;
     const start = performance.now();
-    // ease: cubic-bezier(0.22, 1, 0.36, 1) — approximated with easeOutCubic
     const ease = (t: number) => 1 - Math.pow(1 - t, 3);
     setPos(from);
     const tick = (now: number) => {
@@ -51,7 +60,6 @@ export function HeroCompare() {
       if (t < 1) {
         introRafRef.current = requestAnimationFrame(tick);
       } else {
-        // settle at 50
         setPos(50);
         introDoneRef.current = true;
         introRafRef.current = null;
@@ -75,6 +83,25 @@ export function HeroCompare() {
     commitPos(e.clientX);
   };
   const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    draggingRef.current = false;
+    try {
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch { /* noop */ }
+    if (stageRef.current) stageRef.current.style.willChange = "";
+  };
+
+  const onTrackPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    cancelIntro();
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    draggingRef.current = true;
+    if (stageRef.current) stageRef.current.style.willChange = "clip-path";
+    commitPosFromTrack(e.clientX);
+  };
+  const onTrackPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!draggingRef.current) return;
+    commitPosFromTrack(e.clientX);
+  };
+  const onTrackPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     draggingRef.current = false;
     try {
       (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
@@ -197,58 +224,18 @@ export function HeroCompare() {
           Depois
         </span>
 
-        {/* Slider divider + handle */}
-        <div
-          role="slider"
-          tabIndex={0}
-          aria-label="Comparar antes e depois"
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={Math.round(pos)}
-          aria-orientation="vertical"
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerUp}
-          onKeyDown={onKeyDown}
-          className="absolute inset-y-0 z-20 flex items-center justify-center"
+        {/* Vertical split indicator (non-interactive) */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 z-10"
           style={{
             left: `${pos}%`,
             transform: "translateX(-50%)",
-            width: "72px",
-            cursor: "ew-resize",
-            touchAction: "none",
+            width: "2px",
+            backgroundColor: "var(--color-laranja)",
+            boxShadow: "0 0 12px color-mix(in oklab, var(--color-breu) 70%, transparent)",
           }}
-        >
-          {/* vertical line */}
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0"
-            style={{
-              left: "50%",
-              transform: "translateX(-50%)",
-              width: "2px",
-              backgroundColor: "var(--color-laranja)",
-              boxShadow: "0 0 12px color-mix(in oklab, var(--color-breu) 70%, transparent)",
-            }}
-          />
-          {/* handle */}
-          <span
-            aria-hidden="true"
-            className="hero-handle relative inline-flex items-center justify-center rounded-full"
-            style={{
-              backgroundColor: "var(--color-cal)",
-              border: "2px solid var(--color-laranja)",
-              boxShadow:
-                "0 0 0 10px color-mix(in oklab, var(--color-breu) 30%, transparent), 0 8px 24px color-mix(in oklab, var(--color-breu) 70%, transparent)",
-              color: "var(--color-breu)",
-            }}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M10 5l-6 7 6 7M14 5l6 7-6 7" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </span>
-        </div>
+        />
 
         {/* Contrast gradient — stronger scrim so texts stay AA over both images */}
         <div
@@ -259,20 +246,19 @@ export function HeroCompare() {
               "linear-gradient(to bottom, color-mix(in oklab, var(--color-breu) 55%, transparent) 0%, color-mix(in oklab, var(--color-breu) 15%, transparent) 22%, color-mix(in oklab, var(--color-breu) 55%, transparent) 48%, color-mix(in oklab, var(--color-breu) 88%, transparent) 72%, var(--color-breu) 100%)",
           }}
         />
-
       </div>
 
       {/* Content — bottom third, container-aligned */}
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 z-30"
-        style={{ paddingBlockEnd: "clamp(32px, 6vw, 72px)" }}
+        style={{ paddingBlockEnd: "clamp(28px, 4.5vw, 56px)" }}
       >
         {/* Local scrim behind the text block for guaranteed AA over any image */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 bottom-0"
           style={{
-            height: "72%",
+            height: "78%",
             background:
               "linear-gradient(to bottom, transparent 0%, color-mix(in oklab, var(--color-breu) 55%, transparent) 35%, color-mix(in oklab, var(--color-breu) 88%, transparent) 70%, var(--color-breu) 100%)",
           }}
@@ -286,7 +272,7 @@ export function HeroCompare() {
               letterSpacing: "0.16em",
               textTransform: "uppercase",
               color: "var(--color-laranja)",
-              marginBottom: "16px",
+              marginBottom: "12px",
             }}
           >
             Curitiba · Região Metropolitana
@@ -294,13 +280,13 @@ export function HeroCompare() {
           <h1
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: "clamp(2rem, 6vw + 0.5rem, 4.5rem)",
+              fontSize: "clamp(2rem, 5.5vw + 0.25rem, 3.5rem)",
               lineHeight: 1.05,
               letterSpacing: "-0.02em",
               fontWeight: 600,
               color: "var(--color-cal)",
-              maxWidth: "16ch",
-              marginBottom: "16px",
+              maxWidth: "18ch",
+              marginBottom: "12px",
               textShadow:
                 "0 2px 18px color-mix(in oklab, var(--color-breu) 85%, transparent), 0 0 2px color-mix(in oklab, var(--color-breu) 70%, transparent)",
             }}
@@ -311,11 +297,11 @@ export function HeroCompare() {
             style={{
               fontFamily: "var(--font-sans)",
               fontWeight: 400,
-              fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.15rem)",
+              fontSize: "clamp(0.95rem, 0.85rem + 0.35vw, 1.1rem)",
               lineHeight: 1.5,
               color: "var(--color-cal)",
-              maxWidth: "44ch",
-              marginBottom: "24px",
+              maxWidth: "46ch",
+              marginBottom: "20px",
               textShadow: "0 1px 12px color-mix(in oklab, var(--color-breu) 80%, transparent)",
             }}
           >
@@ -323,12 +309,8 @@ export function HeroCompare() {
             certo. É por isso que o acabamento dura.
           </p>
 
-
-
-
-
           <ul
-            className="hero-metricas mt-8 flex flex-wrap items-center gap-x-3 gap-y-2"
+            className="hero-metricas mt-6 flex flex-wrap items-center gap-x-3 gap-y-2"
             style={{
               fontFamily: "var(--font-mono)",
               fontWeight: 500,
@@ -345,6 +327,64 @@ export function HeroCompare() {
             <li>Equipe própria</li>
           </ul>
 
+          {/* Horizontal before/after control */}
+          <div className="pointer-events-auto mt-5 w-full max-w-md">
+            <div
+              className="flex items-center justify-between"
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontWeight: 500,
+                fontSize: "11px",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "var(--color-grafite)",
+                marginBottom: "10px",
+              }}
+            >
+              <span>Antes</span>
+              <span>Depois</span>
+            </div>
+            <div
+              ref={trackRef}
+              role="slider"
+              tabIndex={0}
+              aria-label="Comparar antes e depois"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(pos)}
+              aria-orientation="horizontal"
+              onPointerDown={onTrackPointerDown}
+              onPointerMove={onTrackPointerMove}
+              onPointerUp={onTrackPointerUp}
+              onPointerCancel={onTrackPointerUp}
+              onKeyDown={onKeyDown}
+              className="relative flex h-10 cursor-ew-resize items-center"
+              style={{ touchAction: "none" }}
+            >
+              {/* track */}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 h-[3px] rounded-full"
+                style={{ backgroundColor: "var(--color-hairline)" }}
+              />
+              {/* fill */}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute left-0 h-[3px] rounded-full"
+                style={{ width: `${pos}%`, backgroundColor: "var(--color-laranja)" }}
+              />
+              {/* handle */}
+              <span
+                aria-hidden="true"
+                className="hero-handle absolute top-1/2 inline-flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full"
+                style={{ left: `${pos}%` }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M10 6l-5 6 5 6M14 6l5 6-5 6" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
