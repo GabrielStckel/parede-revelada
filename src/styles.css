@@ -612,6 +612,84 @@
   }
 }
 
+/* Pincel animado que percorre a timeline */
+.metodo-trilha {
+  position: absolute;
+  left: 4px;
+  top: 14px;
+  width: 2px;
+  height: calc(100% - 28px);
+  background: var(--color-laranja);
+  transform: scaleY(0);
+  transform-origin: top;
+  animation: metodo-trilha-v 2000ms cubic-bezier(0.65, 0, 0.35, 1) 200ms forwards;
+  animation-play-state: paused;
+  pointer-events: none;
+  z-index: 1;
+}
+.metodo-pincel {
+  position: absolute;
+  left: 5px;
+  top: 0;
+  display: inline-flex;
+  transform: translate(-50%, -50%) rotate(90deg);
+  filter: drop-shadow(0 4px 8px color-mix(in oklab, var(--color-laranja) 40%, transparent));
+  opacity: 0;
+  animation: metodo-pincel-v 2000ms cubic-bezier(0.65, 0, 0.35, 1) 200ms forwards;
+  animation-play-state: paused;
+  pointer-events: none;
+  z-index: 2;
+}
+.section-reveal[data-revealing="true"] .metodo-trilha,
+.section-reveal[data-revealed="true"] .metodo-trilha,
+.section-reveal[data-revealing="true"] .metodo-pincel,
+.section-reveal[data-revealed="true"] .metodo-pincel {
+  animation-play-state: running;
+}
+@keyframes metodo-trilha-v {
+  to { transform: scaleY(1); }
+}
+@keyframes metodo-pincel-v {
+  0%   { top: 14px; opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { top: calc(100% - 14px); opacity: 0; }
+}
+@media (min-width: 768px) {
+  .metodo-trilha {
+    left: 12.5%;
+    top: 14px;
+    width: 75%;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation-name: metodo-trilha-h;
+  }
+  .metodo-pincel {
+    left: 12.5%;
+    top: 14px;
+    transform: translate(-50%, -50%) rotate(180deg);
+    animation-name: metodo-pincel-h;
+  }
+  @keyframes metodo-trilha-h {
+    to { transform: scaleX(1); }
+  }
+  @keyframes metodo-pincel-h {
+    0%   { left: 12.5%; opacity: 0; }
+    8%   { opacity: 1; }
+    92%  { opacity: 1; }
+    100% { left: 87.5%; opacity: 0; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .metodo-trilha {
+    transform: none !important;
+    animation: none !important;
+  }
+  .metodo-pincel { display: none !important; }
+}
+
+
 /* ===== Sobre ===== */
 .sobre-grid {
   display: grid;
