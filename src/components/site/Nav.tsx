@@ -91,7 +91,7 @@ export function Nav() {
     };
   }, [open]);
 
-  const navStyle: React.CSSProperties = scrolled
+  const desktopNavStyle: React.CSSProperties = scrolled
     ? {
         backgroundColor: "color-mix(in oklab, var(--color-breu) 92%, transparent)",
         backdropFilter: "blur(12px)",
@@ -105,13 +105,14 @@ export function Nav() {
         className="fixed inset-x-0 top-0 z-40"
         style={{ transition: "background-color 250ms ease, backdrop-filter 250ms ease, border-color 250ms ease" }}
       >
-        <div style={navStyle}>
+        {/* Desktop bar */}
+        <div className="hidden md:block" style={desktopNavStyle}>
           <div className="container-stckel flex h-16 items-center justify-between">
             <a href="#main" className="text-[color:var(--color-cal)]">
               <Logo height={22} />
             </a>
 
-            <nav className="hidden items-center gap-8 md:flex" aria-label="Principal">
+            <nav className="flex items-center gap-8" aria-label="Principal">
               {LINKS.map((l) => (
                 <a
                   key={l.id}
@@ -139,6 +140,34 @@ export function Nav() {
                 Pedir orçamento
               </a>
             </nav>
+          </div>
+        </div>
+
+        {/* Mobile bar */}
+        <div className="nav-mobile-bar md:hidden">
+          <div className="container-stckel flex items-center gap-2" style={{ height: 56 }}>
+            <a
+              href="#main"
+              className="text-[color:var(--color-cal)] mr-auto inline-flex items-center"
+              aria-label="Ir para o topo"
+            >
+              <Logo height={20} />
+            </a>
+
+            <a
+              href={buildWhatsAppLink()}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex h-9 items-center justify-center px-3 text-[11px] uppercase text-[color:var(--color-breu)]"
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+                backgroundColor: "var(--color-laranja)",
+              }}
+            >
+              Orçamento
+            </a>
 
             <button
               ref={burgerRef}
@@ -147,10 +176,10 @@ export function Nav() {
               aria-expanded={open}
               aria-controls="stckel-mobile-menu"
               onClick={() => setOpen(true)}
-              className="inline-flex h-11 w-11 items-center justify-center text-[color:var(--color-cal)] md:hidden"
+              className="inline-flex h-11 w-11 items-center justify-center text-[color:var(--color-cal)] -mr-2"
             >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M3 7h18M3 17h18" stroke="currentColor" strokeWidth="2" />
+              <svg width="20" height="14" viewBox="0 0 20 14" fill="none" aria-hidden="true">
+                <path d="M0 1h20M0 13h20" stroke="currentColor" strokeWidth="1.5" />
               </svg>
             </button>
           </div>
@@ -166,62 +195,148 @@ export function Nav() {
           aria-modal="true"
           aria-label="Menu principal"
           className="fixed inset-0 z-50 md:hidden"
-          style={{ backgroundColor: "var(--color-breu)" }}
+          style={{
+            backgroundColor: "var(--color-breu)",
+            paddingTop: "env(safe-area-inset-top)",
+            paddingBottom: "env(safe-area-inset-bottom)",
+          }}
         >
-          <div className="container-stckel flex h-16 items-center justify-between">
-            <Logo height={22} />
-            <button
-              type="button"
-              aria-label="Fechar menu"
-              onClick={() => setOpen(false)}
-              className="inline-flex h-11 w-11 items-center justify-center text-[color:var(--color-cal)]"
-            >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" />
-              </svg>
-            </button>
-          </div>
-
-          <nav
-            className="container-stckel flex flex-col gap-4 pt-8"
-            aria-label="Principal"
-          >
-            {LINKS.map((l, i) => (
-              <a
-                key={l.id}
-                href={l.href}
-                onClick={() => setOpen(false)}
-                aria-current={active === l.id ? "true" : undefined}
-                className="stckel-menu-item text-[color:var(--color-cal)] aria-[current=true]:text-[color:var(--color-laranja)]"
-                style={{
-                  ['--i' as string]: i,
-                  fontFamily: "var(--font-display)",
-                  fontSize: "2.5rem",
-                  lineHeight: 0.92,
-                  textTransform: "uppercase",
-                  letterSpacing: "-0.01em",
-                }}
-              >
-                {l.label}
-              </a>
-            ))}
-            <a
-              href={buildWhatsAppLink()}
-              target="_blank"
-              rel="noreferrer noopener"
-              onClick={() => setOpen(false)}
-              className="stckel-menu-item mt-6 inline-flex h-12 items-center justify-center px-5 text-[13px] uppercase tracking-[0.08em] text-[color:var(--color-breu)]"
+          <div className="flex h-[100dvh] flex-col">
+            {/* Menu header */}
+            <div
+              className="container-stckel flex items-center justify-between"
               style={{
-                ['--i' as string]: LINKS.length,
-                backgroundColor: "var(--color-laranja)",
-                fontFamily: "var(--font-sans)",
-                fontWeight: 600,
-                alignSelf: "flex-start",
+                height: 56,
+                borderBottom: "1px solid var(--color-hairline)",
               }}
             >
-              Pedir orçamento
-            </a>
-          </nav>
+              <Logo height={20} />
+              <button
+                type="button"
+                aria-label="Fechar menu"
+                onClick={() => setOpen(false)}
+                className="inline-flex h-11 w-11 items-center justify-center text-[color:var(--color-cal)] -mr-2"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.75" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Nav list */}
+            <nav
+              className="container-stckel flex flex-1 flex-col pt-8"
+              aria-label="Principal"
+            >
+              <span
+                className="stckel-menu-item"
+                style={{
+                  ['--i' as string]: 0,
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 11,
+                  letterSpacing: "0.16em",
+                  textTransform: "uppercase",
+                  color: "var(--color-grafite-strong)",
+                  marginBottom: 20,
+                }}
+              >
+                Navegar
+              </span>
+              <ul className="flex flex-col" style={{ gap: 4, listStyle: "none", padding: 0, margin: 0 }}>
+                {LINKS.map((l, i) => (
+                  <li key={l.id}>
+                    <a
+                      href={l.href}
+                      onClick={() => setOpen(false)}
+                      aria-current={active === l.id ? "true" : undefined}
+                      className="stckel-menu-item group flex items-center justify-between text-[color:var(--color-cal)] aria-[current=true]:text-[color:var(--color-laranja)]"
+                      style={{
+                        ['--i' as string]: i + 1,
+                        fontFamily: "var(--font-display)",
+                        fontSize: "2rem",
+                        lineHeight: 1,
+                        paddingBlock: 10,
+                        textTransform: "uppercase",
+                        letterSpacing: "-0.01em",
+                        fontWeight: 600,
+                      }}
+                    >
+                      <span>{l.label}</span>
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          fontFamily: "var(--font-mono)",
+                          fontSize: 16,
+                          color: active === l.id ? "var(--color-laranja)" : "var(--color-grafite-strong)",
+                        }}
+                      >
+                        →
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Footer contact block */}
+              <div
+                className="mt-auto"
+                style={{
+                  borderTop: "1px solid var(--color-hairline)",
+                  paddingTop: 24,
+                  paddingBottom: 24,
+                }}
+              >
+                <span
+                  className="stckel-menu-item block"
+                  style={{
+                    ['--i' as string]: LINKS.length + 1,
+                    fontFamily: "var(--font-mono)",
+                    fontSize: 11,
+                    letterSpacing: "0.16em",
+                    textTransform: "uppercase",
+                    color: "var(--color-grafite-strong)",
+                    marginBottom: 12,
+                  }}
+                >
+                  Fale com a Stckel
+                </span>
+                <a
+                  href={buildWhatsAppLink()}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  onClick={() => setOpen(false)}
+                  className="stckel-menu-item flex h-12 w-full items-center justify-center text-[13px] uppercase text-[color:var(--color-breu)]"
+                  style={{
+                    ['--i' as string]: LINKS.length + 2,
+                    backgroundColor: "var(--color-laranja)",
+                    fontFamily: "var(--font-sans)",
+                    fontWeight: 600,
+                    letterSpacing: "0.08em",
+                  }}
+                >
+                  Pedir orçamento
+                </a>
+                <div
+                  className="stckel-menu-item"
+                  style={{
+                    ['--i' as string]: LINKS.length + 3,
+                    marginTop: 16,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 6,
+                    fontFamily: "var(--font-mono)",
+                    fontSize: 12,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: "var(--color-grafite-strong)",
+                  }}
+                >
+                  <span>WhatsApp · (41) 99815-5076</span>
+                  <span>Curitiba / PR · Seg–Sex 08–18</span>
+                </div>
+              </div>
+            </nav>
+          </div>
         </div>
       )}
     </>
