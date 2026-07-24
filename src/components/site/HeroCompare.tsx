@@ -216,7 +216,7 @@ export function HeroCompare() {
           style={{
             left: `${pos}%`,
             transform: "translateX(-50%)",
-            width: "44px",
+            width: "72px",
             cursor: "ew-resize",
             touchAction: "none",
           }}
@@ -230,37 +230,37 @@ export function HeroCompare() {
               transform: "translateX(-50%)",
               width: "2px",
               backgroundColor: "var(--color-laranja)",
+              boxShadow: "0 0 12px color-mix(in oklab, var(--color-breu) 70%, transparent)",
             }}
           />
           {/* handle */}
           <span
             aria-hidden="true"
-            className="relative inline-flex items-center justify-center rounded-full"
+            className="hero-handle relative inline-flex items-center justify-center rounded-full"
             style={{
-              width: "40px",
-              height: "40px",
               backgroundColor: "var(--color-cal)",
               border: "2px solid var(--color-laranja)",
               boxShadow:
-                "0 0 0 8px color-mix(in oklab, var(--color-breu) 40%, transparent), 0 6px 20px color-mix(in oklab, var(--color-breu) 60%, transparent)",
+                "0 0 0 10px color-mix(in oklab, var(--color-breu) 30%, transparent), 0 8px 24px color-mix(in oklab, var(--color-breu) 70%, transparent)",
               color: "var(--color-breu)",
             }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M9 6l-5 6 5 6M15 6l5 6-5 6" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter" />
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M10 5l-6 7 6 7M14 5l6 7-6 7" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </span>
         </div>
 
-        {/* Contrast gradient — AA safety over bottom two-thirds */}
+        {/* Contrast gradient — stronger scrim so texts stay AA over both images */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-10"
           style={{
             background:
-              "linear-gradient(to bottom, transparent 0%, color-mix(in oklab, var(--color-breu) 20%, transparent) 35%, color-mix(in oklab, var(--color-breu) 70%, transparent) 65%, color-mix(in oklab, var(--color-breu) 92%, transparent) 100%)",
+              "linear-gradient(to bottom, color-mix(in oklab, var(--color-breu) 55%, transparent) 0%, color-mix(in oklab, var(--color-breu) 15%, transparent) 22%, color-mix(in oklab, var(--color-breu) 55%, transparent) 48%, color-mix(in oklab, var(--color-breu) 88%, transparent) 72%, var(--color-breu) 100%)",
           }}
         />
+
       </div>
 
       {/* Content — bottom third, container-aligned */}
