@@ -782,8 +782,8 @@
 }
 
 @media (max-width: 767px) {
-  .obras-grid { grid-template-columns: repeat(2, 1fr); }
-  .obras-grid > [data-span="full"] { grid-column: span 2; }
+  .obras-grid { grid-template-columns: repeat(1, 1fr); }
+  .obras-grid > [data-span="full"] { grid-column: auto; }
 }
 
 /* Hero: CTAs empilham full-width e métricas compactam em telas estreitas */
