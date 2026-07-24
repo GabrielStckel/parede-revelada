@@ -704,6 +704,26 @@
   outline-offset: 6px;
 }
 
+/* Hero handle: maior no toque, com halo pulsante one-shot como affordance */
+.hero-handle {
+  width: 56px;
+  height: 56px;
+}
+@media (min-width: 768px) {
+  .hero-handle { width: 48px; height: 48px; }
+}
+@keyframes hero-handle-hint {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}
+.hero-handle {
+  animation: hero-handle-hint 2.2s ease-in-out 0.9s 3;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-handle { animation: none; }
+}
+
+
 /* FAB do WhatsApp: safe-area e ocultar quando o usuário está no formulário */
 .stckel-fab {
   bottom: calc(clamp(16px, 3vw, 28px) + env(safe-area-inset-bottom, 0px));
