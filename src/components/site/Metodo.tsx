@@ -63,6 +63,15 @@ export function Metodo() {
         </header>
 
         <ol className="metodo-timeline" role="list">
+          <span className="metodo-trilha" aria-hidden="true" />
+          <span className="metodo-pincel" aria-hidden="true">
+            <svg viewBox="0 0 32 32" width="26" height="26" fill="none">
+              <rect x="6" y="3" width="14" height="9" rx="1.5" fill="var(--color-grafite-strong)" />
+              <rect x="4" y="10" width="18" height="5" rx="1" fill="var(--color-cal)" stroke="var(--color-grafite-strong)" strokeWidth="1" />
+              <path d="M7 15 L21 15 L19 28 L9 28 Z" fill="var(--color-laranja)" />
+              <path d="M11 28 L11 31 M15 28 L15 31 M17 28 L17 31" stroke="var(--color-laranja)" strokeWidth="1.2" strokeLinecap="round" />
+            </svg>
+          </span>
           {metodo.map((p) => (
             <li key={p.indice} className="metodo-passo">
               <span className="metodo-ponto" aria-hidden="true" />
@@ -72,6 +81,7 @@ export function Metodo() {
             </li>
           ))}
         </ol>
+
       </div>
     </section>
   );
