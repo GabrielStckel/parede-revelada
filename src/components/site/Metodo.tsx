@@ -97,7 +97,7 @@ export function Metodo() {
           </h2>
         </header>
 
-        <ol className="metodo-timeline" role="list">
+        <ol ref={timelineRef} className="metodo-timeline" role="list">
           <span className="metodo-trilha" aria-hidden="true" />
           <span className="metodo-pincel" aria-hidden="true">
             <svg viewBox="0 0 32 32" width="26" height="26" fill="none">
