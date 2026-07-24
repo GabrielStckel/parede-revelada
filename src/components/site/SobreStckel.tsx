@@ -15,8 +15,8 @@ export function SobreStckel() {
           <img
             src={equipeImg}
             alt="Equipe Stckel Pinturas em obra"
-            width={1600}
-            height={1200}
+            width={1400}
+            height={1050}
             loading="lazy"
             decoding="async"
           />
