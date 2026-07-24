@@ -284,13 +284,13 @@ export function HeroCompare() {
           <h1
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: "clamp(2.75rem, 5vw + 1rem, 6rem)",
+              fontSize: "clamp(2rem, 6vw + 0.5rem, 4.5rem)",
               lineHeight: 1.05,
               letterSpacing: "-0.02em",
               fontWeight: 600,
               color: "var(--color-cal)",
-              maxWidth: "18ch",
-              marginBottom: "20px",
+              maxWidth: "16ch",
+              marginBottom: "16px",
               textShadow: "0 2px 24px color-mix(in oklab, var(--color-breu) 60%, transparent)",
             }}
           >
@@ -300,11 +300,11 @@ export function HeroCompare() {
             style={{
               fontFamily: "var(--font-sans)",
               fontWeight: 400,
-              fontSize: "clamp(1.05rem, 0.9rem + 0.6vw, 1.25rem)",
+              fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.15rem)",
               lineHeight: 1.45,
               color: "var(--color-cal)",
-              maxWidth: "46ch",
-              marginBottom: "28px",
+              maxWidth: "44ch",
+              marginBottom: "24px",
             }}
           >
             Pintura, textura e revestimento com preparo de superfície feito do jeito
