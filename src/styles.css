@@ -659,5 +659,61 @@
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--color-grafite);
+  color: var(--color-grafite-strong);
+}
+
+/* ===== Etapa 7 — refinamentos ===== */
+
+/* Corpo secundário: subir contraste para AA */
+.painel-content p,
+.linha-inner .aplicacao,
+.obras-filtro,
+.obras-filtro-count {
+  color: var(--color-grafite-strong);
+}
+.obras-filtro:hover { color: var(--color-cal); }
+
+/* Filtros de Obras: scroll horizontal com snap no mobile */
+.obras-filtros {
+  flex-wrap: nowrap;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.obras-filtro { scroll-snap-align: start; }
+@media (min-width: 768px) {
+  .obras-filtros { flex-wrap: wrap; }
+}
+
+/* Obras: desligar scroll interno em telas pequenas — deixa a seção fluir */
+@media (max-width: 767px) {
+  .obras-scroll {
+    max-height: none;
+    overflow: visible;
+    mask-image: none;
+    padding-right: 0;
+  }
+  .obras-grid { grid-template-columns: 1fr; }
+}
+
+/* Hero: CTAs empilham full-width e métricas somem em telas estreitas */
+.hero-ctas > a { flex: 1 1 auto; }
+@media (max-width: 640px) {
+  .hero-ctas { flex-direction: column; align-items: stretch; }
+  .hero-ctas > a { width: 100%; }
+  .hero-metricas { display: none !important; }
+}
+
+/* Slider do hero: foco visível sem colidir com o handle */
+[role="slider"]:focus-visible {
+  outline: 2px solid var(--color-laranja);
+  outline-offset: 6px;
+}
+
+/* FAB do WhatsApp: safe-area e ocultar quando o usuário está no formulário */
+.stckel-fab {
+  bottom: calc(clamp(16px, 3vw, 28px) + env(safe-area-inset-bottom, 0px));
+}
+#contato:focus-within ~ .stckel-fab { opacity: 0; pointer-events: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .stckel-fab { transition: background-color 200ms ease, opacity 200ms ease; }
 }
