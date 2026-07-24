@@ -268,7 +268,17 @@ export function HeroCompare() {
         className="pointer-events-none absolute inset-x-0 bottom-0 z-30"
         style={{ paddingBlockEnd: "clamp(32px, 6vw, 72px)" }}
       >
-        <div className="container-stckel">
+        {/* Local scrim behind the text block for guaranteed AA over any image */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0"
+          style={{
+            height: "72%",
+            background:
+              "linear-gradient(to bottom, transparent 0%, color-mix(in oklab, var(--color-breu) 55%, transparent) 35%, color-mix(in oklab, var(--color-breu) 88%, transparent) 70%, var(--color-breu) 100%)",
+          }}
+        />
+        <div className="container-stckel relative">
           <p
             style={{
               fontFamily: "var(--font-mono)",
@@ -276,7 +286,7 @@ export function HeroCompare() {
               fontSize: "12px",
               letterSpacing: "0.16em",
               textTransform: "uppercase",
-              color: "color-mix(in oklab, var(--color-cal) 85%, transparent)",
+              color: "var(--color-laranja)",
               marginBottom: "16px",
             }}
           >
@@ -292,7 +302,8 @@ export function HeroCompare() {
               color: "var(--color-cal)",
               maxWidth: "16ch",
               marginBottom: "16px",
-              textShadow: "0 2px 24px color-mix(in oklab, var(--color-breu) 60%, transparent)",
+              textShadow:
+                "0 2px 18px color-mix(in oklab, var(--color-breu) 85%, transparent), 0 0 2px color-mix(in oklab, var(--color-breu) 70%, transparent)",
             }}
           >
             A diferença está na preparação
@@ -302,15 +313,17 @@ export function HeroCompare() {
               fontFamily: "var(--font-sans)",
               fontWeight: 400,
               fontSize: "clamp(0.95rem, 0.85rem + 0.4vw, 1.15rem)",
-              lineHeight: 1.45,
+              lineHeight: 1.5,
               color: "var(--color-cal)",
               maxWidth: "44ch",
               marginBottom: "24px",
+              textShadow: "0 1px 12px color-mix(in oklab, var(--color-breu) 80%, transparent)",
             }}
           >
             Pintura, textura e revestimento com preparo de superfície feito do jeito
             certo. É por isso que o acabamento dura.
           </p>
+
 
           <div className="hero-ctas flex flex-wrap items-center gap-3">
             <a
