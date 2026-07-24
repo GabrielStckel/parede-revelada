@@ -14,6 +14,8 @@
   --color-grafite-strong: #B4B4BA;
   --color-laranja: #F57C1F;
   --color-brasa: #C25A0C;
+  --color-whatsapp: #25D366;
+  --color-whatsapp-dark: #128C7E;
   --color-hairline: color-mix(in oklab, var(--color-cal) 8%, transparent);
 
   /* Typography */
