@@ -68,7 +68,9 @@ export const Route = createFileRoute("/")({
       {
         rel: "preload",
         as: "image",
-        href: heroDepoisUrl,
+        href: heroDepois1600,
+        imagesrcset: `${heroDepois800} 800w, ${heroDepois1600} 1600w`,
+        imagesizes: "100vw",
         fetchpriority: "high",
       },
     ],
