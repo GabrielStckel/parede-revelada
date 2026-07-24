@@ -73,7 +73,7 @@ export function Footer() {
               className="text-[color:var(--color-grafite)]"
               style={{ fontFamily: "var(--font-mono)", fontWeight: 500, fontSize: "var(--text-small)" }}
             >
-              CNPJ 00.000.000/0000-00
+              CNPJ 60.119.236/0001-73
             </p>
           </div>
         </div>
