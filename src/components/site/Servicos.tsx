@@ -21,21 +21,19 @@ export function Servicos() {
           if (e.isIntersecting) {
             el.setAttribute("data-revealing", "true");
             io.disconnect();
-            const onEnd = (ev: TransitionEvent) => {
-              if (ev.propertyName !== "clip-path") return;
+            window.setTimeout(() => {
               el.removeAttribute("data-revealing");
               el.setAttribute("data-revealed", "true");
-              el.removeEventListener("transitionend", onEnd);
-            };
-            el.addEventListener("transitionend", onEnd);
+            }, 750);
             break;
           }
         }
       },
-      { threshold: 0.2 },
+      { threshold: 0.15 },
     );
     io.observe(el);
     return () => io.disconnect();
+
   }, []);
 
   const onKeyDown = (e: KeyboardEvent<HTMLUListElement>) => {
